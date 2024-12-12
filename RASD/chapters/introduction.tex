@@ -1,0 +1,143 @@
+\section{Purpose}
+The purpose of the system Student\&Companies (S\&C) is to help matching university student who are looking for internship with companies that are offering them. The matching system is based on student's experiences, skills and attitude crossed with the projects and terms offered by the various companies. There are two ways in which students can get an internship, one is by being proactive and initiating the application process and the other one is by being recommended to a company by the platform.
+
+The goals of the S\&C platform are:
+\begin{enumerate}[label=\textbf{G\arabic*}:,ref=G\arabic*,leftmargin=1.3cm]
+    \labelleditem{Students can list their experiences, skills and attitudes in their CVs}
+    \labelleditem{Companies can post the projects students are going to work on during their internships (specifying topics, tasks and technologies adopted) with the relative compensations and benefits}
+    \labelleditem{Students can initiate the process by going through the available internships}
+    \labelleditem{Students can be notified when an internship that might interest them becomes available}
+    \labelleditem{Companies can be notified about the availability of students CVs corresponding to their needs}
+    \labelleditem{Students and companies can accept or decline a recommendation}
+    \labelleditem{Companies can interview students}
+    \labelleditem{Students and Companies can monitor the execution and the outcomes of the selection procedure}
+    \labelleditem{Student can report on a logbook the daily situation of the internship}
+    \labelleditem{Universities can monitor the situation of the internship}
+    
+\end{enumerate}
+
+\pagebreak
+
+\section{Scope}
+Students that use the platform are enrolled in a university and are looking for an internship. Companies use the platform to advertise the internship they are offering. 
+
+The platform integrates its login and registration process with an existing Single Sign-On (SSO) system, which handles user authentication.
+
+The platform asks a series of questions to students that want to upload their CV. Once the student wants to contact a company the system will generate a personalized and editable CV, tailored on the company's requirements. Furthermore it helps companies to make project description more apprizing for students.
+
+A personalized homepage will be created by the system for both students and companies based on the information they gave during the registration.
+
+Students can be proactive when looking for an internship by going through the personalized list of available experiences but also can be notified by the system when an internship that might interest them becomes available. 
+
+The system also notifies companies about the availability of student's CVs corresponding to their needs.
+
+When these suggestions are accepted by the two parties, a contact is established. After a contact is settled a selection process starts.
+
+During the process companies interview students to determine if the students will fit with the company and the internship. 
+
+The system will also support the selection process by setting up, conduct and manage the interviews. At the end of the process it will also help finalizing the selections.
+
+To collect data the system asks to students and companies to provide feedback or suggestions regarding the internships.
+
+The system provides all interested parties with tools to track and monitor the execution and outcomes of the matchmaking process. It also provide spaces where interested parties can complain, communicate problems and provide information regarding the status of the ongoing internship.
+
+Universities monitor the situation of internships, they are responsible for handling the complaints, especially when one of the two parties want to interrupt the internship.
+
+
+The following table describes world, shared and machine phenomena.
+\begin{center} %Limits the scope of \rowcolors
+    \rowcolors{2}{gray!25}{white}
+    \begin{longtable}{|p{8.7cm}|p{3cm}|p{3cm}|}
+        \caption[Phenomena Table]{}
+        \label{table:phenomena}
+        \endlastfoot
+        \hline
+        \rowcolor{gray!50}
+        \textbf{Phenomena}                                                                                                                & \textbf{Controlled by} & \textbf{Shared} \\ \hline
+        A user wants to log in to the platform & W & N \\ \hline
+        A company wants to create a new internship & W & N \\ \hline
+        A student wants to insert information to create  his CV   & W  & N \\ \hline
+        A student wants to look for an internship & W  & N \\ \hline
+        The system creates the personalized CV  & M  & Y \\ \hline
+        The system makes a suggestion to produce a more appealing project description  & M  & Y \\ \hline
+        The system notifies a student when an internship that may interest him becomes available & M  & Y \\ \hline
+        The system notifies a company when a student's CV corresponding their needs is available & M  & Y \\ \hline
+        The system starts a selection process when two related suggestions are accepted by the two parties & M  & N \\ \hline
+        The system supports the selection process by setting up, conducting and managing the interviews. & M  & Y \\ \hline
+        At the end of the process the system will also help finalizing the selections & M  & Y 
+        \\ \hline
+        The system asks to a student to provide a feedback or a suggestion about the internship & M  & Y \\ \hline
+        The system asks to a company to provide a feedback or a suggestion about the internship & M  & Y \\ \hline
+        The system shows the current state of the matchmaking process & M  & Y \\ \hline
+        Any user write in the "Report Area" section & W  & Y \\ \hline
+        University handle a complaint & W  & Y \\ \hline
+        Any user want to interrupt the internship & W  & N \\ \hline
+    \end{longtable}
+\end{center}
+\pagebreak
+
+\section{Definitions, Acronyms, Abbreviations}
+
+
+\subsection{Definitions}
+\begin{description}[leftmargin=0pt]
+\item[Curriculum Vitae (CV):] A brief account of a person's education,  qualifications, and previous occupations, typically sent with a job application.
+\item[Students\&Companies:] A platform designed to help students and businesses to find an internship.
+\item[Single Sign On (SSO)]: A way to login into the system using the credentials offered by the University or the company. 
+\item[Internship:] The position of a student or trainee who works in an organization, in order to gain work experience or satisfy requirements for a qualification.
+\item[Recommendation:] The process of informing students and companies when an interesting internship becomes available or about the availability of a student CVs corresponding the needs of a company.
+\item[Project:] set of tasks the company assign to their internee.
+\item[Task:] a piece of work.
+\item[Interviews:] A meeting between the student and the company where the student has to demonstrate to be fit for the company's internship. 
+\item[Feedback:] Information about how the internship is going from both of the parties.
+\item [Report Area:] A space where a student or a company can complain, communicate problems, and provide information about the current status of the ongoing internship.
+\item[My CV:] Section of the website where the student is able to create his CV.
+
+\end{description}
+
+
+\subsection{Acronyms}
+\begin{description}[leftmargin=0pt]
+    \item [SSO:] Single Sign On
+    \item [API:] Application Programming Interface
+    \item [CV:] Curriculum Vitae
+    \item [S\&C:] Students\&Companies
+    \item [IDE:] Integrated Development Environment
+\end{description}
+
+
+\subsection{Abbreviations}
+\begin{description}[leftmargin=0pt]
+    \item[e.g.:] For example
+    \item [w.r.t.:] With reference to
+\end{description}
+
+\section{Revision history}
+
+\begin{itemize}
+    \item 
+\end{itemize}
+
+\section{Reference Documents}
+\begin{description}[leftmargin=0pt]
+    \item[Specification document:] \emph{"Assignment RDD AY 2024-2025"}
+    \item[UML official specification:] \url{https://www.omg.org/spec/UML/}
+    \item[Alloy official documentation:] \url{https://alloytools.org/documentation.html}
+\end{description}
+
+\section{Document Structure}
+
+\begin{enumerate}
+    \item \textbf{Section 1: Introduction} \\
+          This section exposes the purpose and the scope of the system explaining the goals of the project and including the analysis of the world and the shared phenomena. x  aq
+          It also contains definitions acronyms and abbreviations to make sure the document is not ambiguous.
+    \item \textbf{Section 2: Overall Description} \\
+          This section contains an overall description about the product prospective including scenarios and detail on the shared phenomena and a domain model expressed through class diagram and state diagram. It also include the product functions with the most important requirements and categories of use cases. It also contains the assumptions, dependencies and constraints.
+          
+    \item \textbf{Section 3: Specific Requirements} \\
+          This section describes the specific requirements, in particular there are details on all aspects that may be useful for the development team.
+          It provides external interface requirements, which include user, hardware, software and communication interfaces.
+          Finally, it describes performance and functional requirements, through the use of use case diagrams, use cases, related sequences, activity diagrams, and mapping on requirements.
+    \item \textbf{Section 4: Formal Analysis using Alloy} \\
+        This section provides a formal analysis using the alloy language with a brief presentation of the main objectives driving the formal modeling activity. This is done to prove the correctness and soundness of the system described in the previous sections.
+\end{enumerate}
