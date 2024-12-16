@@ -1,14 +1,41 @@
 \section{External Interface Requirements}
 
 \subsection{User Interfaces}
-Vai Brio tocca a te
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{RASD/Assets/User interfaces/login.png}
+      \caption{Login page}
+      \label{fig:Login page}
+\end{figure}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{RASD/Assets/User interfaces/sidebar.png}
+      \caption{Student Sidebar}
+      \label{fig:Student Sidebar}
+\end{figure}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{RASD/Assets/User interfaces/Homepage_student.png}
+      \caption{HomePage Student}
+      \label{fig:HomePage Student}
+\end{figure}
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{RASD/Assets/User interfaces/Homepage Company.png}
+      \caption{HomePage Company}
+      \label{fig:HomePage Company}
+\end{figure}
 
 
 \subsection{Hardware Interfaces}
 The system does not need any specific hardware, each user will need a browser with an Internet connection in order to communicate with the servers of the platform.
 
 \subsection{Software Interfaces}
-To do
+\begin{enumerate}
+    \item \textbf{Videocall meeting}
+    \item \textbf{AI tool for match making}
+    \item \textbf{Databases Interface}
+\end{enumerate}
 
 \subsection{Comunication Interfaces}
 \begin{enumerate}
@@ -20,9 +47,8 @@ To do
 
 \section{Functional Requirements}
 \begin{enumerate}[label=\textbf{R\arabic*}:,ref=R\arabic*,leftmargin=1.3cm]
-    \labelleditem{The system shall allow students to log in with SSO.}
-    \labelleditem{The system shall allow company employee to log in with SSO.}
-    \labelleditem{The studens shall allow the student to provide information about their CVs.}
+    \labelleditem{The system shall allow users to log in with SSO.}
+    \labelleditem{The system shall allow the student to provide information for their CVs.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
             \labelledsubitem{The system shall allow the students to specify their personal information, like name, contact and personal ambition.}
             \labelledsubitem{The system shall allow the students to specify their education experience, like the academic background.}
@@ -36,26 +62,61 @@ To do
         \end{enumerate}
     \labelleditem{The system shall allow the students to join an internship.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
-            \labelledsubitem{The system shall help the user to create a customized CV for each company.}
-            \labelledsubitem{The system shall allow the students to be notified when a new probably interesting internship becomes available.}
+            \labelledsubitem{The system shall help the students to create a customized CV for each company.}
         \end{enumerate}
+   \labelleditem{The system shall allow the students to be notified when a new interesting internship becomes available.}
     \labelleditem{The system shall allow the company employee to create an internship.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
             \labelledsubitem{The system shall allow the company employee to specify the title of the internship.}
-            \labelledsubitem{The system shall allow the company employee to specify the description of the internship.}
+            \labelledsubitem{The system shall allow the company employee to specify the description, helped by an AI, of the internship.}
             \labelledsubitem{The system shall allow the company employee to specify the requirement of the internship.}
             \labelledsubitem{The system shall allow the company employee to specify the duration of the internship.}
             \labelledsubitem{The system shall allow the company employee to specify the availability of the internship.}
             \labelledsubitem{The system shall allow the company employee to specify other information about the internship.}
-            \labelledsubitem{The system shall allow the company employee to be notified when a new probably interesting student becomes available.}
         \end{enumerate}
-    \labelleditem{The system shall allow the company to open a claim to the university.}
-    \labelleditem{The system shall allow the students to open a claim to the university.}
+    \labelleditem{The system shall allow the company employee to be notified when a new probably interesting student becomes available.}
+    \labelleditem{The system shall allow the student to view a personalized homepage after inserting his CV's information.}
+    \labelleditem{The system shall allow the company employee to view a personalized homepage after publishing an internship.}
+    \labelleditem{The system shall allow the company to write a complaint to the university.}
+    \labelleditem{The system shall allow the students to write a complaint to the university.}
     \labelleditem{}{The system shall allow students to chat with his company.}
-    \labelleditem{The system shall allow employee to chat with his students.}
+    \labelleditem{The system shall allow companies employee to chat with his trainee.}
+    \labelleditem{The system shall allow universities employee to chat with his students.}
+    \labelleditem{The system shall allow the student to insert initial information.}
+    \labelleditem{The system shall allow the student and the company to arrange a meeting.}
+    \labelleditem{The system shall send a meeting link for the interview to the student and the company.}
+    \labelleditem{The system shall allow the student to write on a logbook to inform the university on the status of his internship.}
 \end{enumerate}
 
 \subsection{Use case diagrams}
+    \subsubsection{Student}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{RASD/Assets/UseCaseDiagram/student.png}
+        \caption{Student's use case diagram.}
+        \label{fig:Student's use case diagram}
+    \end{figure}
+
+\subsubsection{Company employee}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{RASD/Assets/UseCaseDiagram/company.png}
+        \caption{Company employee's use case diagram.}
+        \label{fig:Company employee's use case diagram}
+    \end{figure}
+
+\subsubsection{University employee}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{RASD/Assets/UseCaseDiagram/university.png}
+        \caption{University employee's use case diagram.}
+        \label{fig:University employee's use case diagram}
+    \end{figure}
+
+\pagebreak
 \subsection{Use cases}
 
     \textbf{UC1}
@@ -90,12 +151,14 @@ To do
         \label{fig:Student's first platform access}
     \end{figure}
 
+
     \textbf{UC2}
     \begin{table}[H]
     \centering
     \begin{tabular}{|l|p{11.9cm}|}
         \hline
-        \textbf{Name}            & Student provides his CV’s information to the platform \\\hline
+        \textbf{Name}            & Student inserts his CV information in the InitialForm
+        \\\hline
         \textbf{Actor}           & Student         \\\hline
         \textbf{Entry condition} &
         \begin{itemize}
@@ -163,8 +226,8 @@ To do
         \caption{Student search and contact the company.}
         \label{fig:Student search and contact the company}
     \end{figure}
-
     
+
     \textbf{UC4}
     \begin{table}[H]
     \centering
@@ -204,13 +267,13 @@ offering \\\hline
     \centering
     \begin{tabular}{|l|p{11.9cm}|}
         \hline
-        \textbf{Name}            & Student search and contact the company \\\hline
+        \textbf{Name}            & Student search through the internships and contact the company \\\hline
         \textbf{Actor}           & Student, Company Employee         \\\hline
         \textbf{Entry condition} &
         \begin{itemize}
               \item Student is already logged in
               \item Student has already compiled his Curriculum Vitae
-              \item A Company has published an internship may interest the student.
+              \item A Company has published an internship that may interest the student.
         \end{itemize}                                        \\\hline
         \textbf{Event flow}      &
         \begin{enumerate}[label=\arabic*.]
@@ -219,7 +282,7 @@ offering \\\hline
               \item The student is interested on that specific internship, so he press on "Contact" button.
               \item The student appreciates the custom generated CV.
         \end{enumerate}            \\\hline
-        \textbf{Exit condition}  & Student clicks in "Send" button.\\\hline
+        \textbf{Exit condition}  & Student clicks the "Send" button.\\\hline
         \textbf{Exception}       &  
         \begin{itemize}
             \item The student is not interested on the proposed internship. In this case, the student just ignore the notification.
@@ -227,8 +290,8 @@ offering \\\hline
         \end{itemize} 
         \\\hline
     \end{tabular}
-    \caption{Student search and contact the company}
-    \label{table:Student search and contact the company}
+    \caption{Student search through the internships and contact the company}
+    \label{table:Student search through the internhisps and contact the company}
     \end{table}
 oi
     \begin{figure}[H]
@@ -237,7 +300,6 @@ oi
         \caption{Student receive a notification about the availability of an internship that might interest him.}
         \label{fig:Student receive a notification about the availability of an internship that might interest him}
     \end{figure}
-
 
     \textbf{UC6}
     
@@ -254,9 +316,9 @@ oi
         \textbf{Event flow}      &
         \begin{enumerate}[label=\arabic*.]
               \item The system will start a matchmaking process between the student and opened internship positions.
-              \item The system sends a notification to all of the Company Employees who may be interested in the new student.
+              \item The system sends a notification to all of the company employees who may be interested in the new student.
               \item The company employee, who receive the notification, click on the "View Profile" button to obtain more detailed information about his CV.
-              \item The company employee click on send message, near the student name, to contact it.
+              \item The company employee click on sends message, near the student name, to contact him.
               
         \end{enumerate}            \\\hline
         \textbf{Exit condition}  & The company employee send a message to the student  \\\hline
@@ -406,3 +468,271 @@ oi
         \caption{The company complains about the student taking the internship.}
         \label{fig:The company complains about the student taking the internship}
     \end{figure}
+
+\subsection{Requirements mapping}
+In this section it is shown how the $R\land D \models G$ holds.
+In particular, the following traceability matrix associates domain assumptions and requirements to goals.
+After that, to facilitate reading, the text of all the assumptions and all the requirements related to each goal is reported.
+\begin{table}[H]
+      %\caption*{\textbf{Title}}
+      \centering
+      \begin{tabular}{|l|p{8cm}|p{5cm}|}
+            \hline
+            \textbf{Goal ID} & \textbf{Requirement ID} & \textbf{Domain assumption ID}      \\\hline
+            \ref{{G1}}       & \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}   & \ref{{D1}}, \ref{{D2}}, \ref{{D3}}                
+             \\\hline
+             
+            \ref{{G2}}       & \ref{{R1}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}
+            & \ref{{D1}}, \ref{{D2}}, \ref{{D3}}     \\\hline
+            
+            \ref{{G3}}
+            &
+            \ref{{R1}}, \ref{{R5}},\ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}} \ref{{R13}}  
+            & 
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D6}}, \ref{{D8}}  \\\hline
+            
+            \ref{{G4}}
+            & 
+            \ref{{R1}}, \ref{{R4}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}
+            & 
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D6}}                                \\\hline
+
+            
+            \ref{{G5}}       
+            &
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}, \ref{{R6}}
+            & 
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D6}}                     
+            \\\hline
+            
+            
+            \ref{{G6}}
+            &
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R4}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}, \ref{{R6}}, \ref{{R7}}, \ref{{R8}}
+            &
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D6}}                                \\\hline
+
+            
+            \ref{{G7}}
+            & 
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R5}},\ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}, \ref{{R11}}, \ref{{R12}}
+            & 
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}
+            \\\hline
+
+            
+            \ref{{G8}}
+            &
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R3}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}, \ref{{R12}}, \ref{{R13}}, \ref{{R15}}, \ref{{R16}}
+            &
+            \ref{{D1}}, \ref{{D3}}, \ref{{D3}}, 
+            \\\hline
+
+            
+            \ref{{G9}}
+            &
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R3}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}},\ref{{R7}}, \ref{{R17}}
+            &
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D9}}                                \\\hline
+
+            
+            \ref{{G10}}
+            &
+            \ref{{R1}}, \ref{{R3}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}} \ref{{R9}}, \ref{{R10}}, \ref{{R13}}, \ref{{R17}}
+            &
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D9}}
+            \\\hline
+
+            
+            \ref{{G11}}
+            &
+            \ref{{R1}}, \ref{{R3}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}},  \ref{{R9}}, \ref{{R12}}
+            &
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D5}}
+            \\\hline
+            
+            
+            \ref{{G12}}
+            &
+            \ref{{R1}}, \ref{{R2}}, \ref{{R2.1}}, \ref{{R2.2}}, \ref{{R2.3}}, \ref{{R2.4}}, \ref{{R2.5}}, \ref{{R2.6}}, \ref{{R2.7}}, \ref{{R2.8}}, \ref{{R2.9}}, \ref{{R3}}, \ref{{R5}}, \ref{{R5.1}}, \ref{{R5.2}}, \ref{{R5.3}}, \ref{{R5.4}}, \ref{{R5.5}}, \ref{{R5.6}}, \ref{{R10}}, \ref{{R11}}, \ref{{R12}}, \ref{{R13}}
+            &
+            \ref{{D1}}, \ref{{D2}}, \ref{{D3}}, \ref{{D5}}        \\\hline
+            
+      \end{tabular}
+      \caption{Traceability matrix}
+      \label{table:Traceability matrix}
+\end{table}
+
+\begin{enumerate}[leftmargin=1.3cm]
+    \printitem{G1}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R2}
+        \printitem{R2.1}
+        \printitem{R2.2}
+        \printitem{R2.3}
+        \printitem{R2.4}
+        \printitem{R2.5}
+        \printitem{R2.6}
+        \printitem{R2.7}
+        \printitem{R2.8}
+        \printitem{R2.9}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+    \end{enumerate}
+     \printitem{G2}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+    \end{enumerate}
+     \printitem{G3}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{R13}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+        \printitem{D6}
+        \printitem{D8}
+    \end{enumerate}
+    \printitem{G4}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R4}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+    \end{enumerate}
+    \printitem{G5}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R2}
+        \printitem{R2.1}
+        \printitem{R2.2}
+        \printitem{R2.3}
+        \printitem{R2.4}
+        \printitem{R2.5}
+        \printitem{R2.6}
+        \printitem{R2.7}
+        \printitem{R2.8}
+        \printitem{R2.9}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+        \printitem{D6}
+    \end{enumerate}
+    \printitem{G6}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R2}
+        \printitem{R2.1}
+        \printitem{R2.2}
+        \printitem{R2.3}
+        \printitem{R2.4}
+        \printitem{R2.5}
+        \printitem{R2.6}
+        \printitem{R2.7}
+        \printitem{R2.8}
+        \printitem{R2.9}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{R6}
+        \printitem{R7}
+        \printitem{R8}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+        \printitem{D6}
+    \end{enumerate}
+    \printitem{G7}
+    \begin{enumerate}[leftmargin=1.3cm]
+        \printitem{R1}
+        \printitem{R2}
+        \printitem{R2.1}
+        \printitem{R2.2}
+        \printitem{R2.3}
+        \printitem{R2.4}
+        \printitem{R2.5}
+        \printitem{R2.6}
+        \printitem{R2.7}
+        \printitem{R2.8}
+        \printitem{R2.9}
+        \printitem{R5}
+        \printitem{R5.1}
+        \printitem{R5.2}
+        \printitem{R5.3}
+        \printitem{R5.4}
+        \printitem{R5.5}
+        \printitem{R5.6}
+        \printitem{R11}
+        \printitem{R12}
+        \printitem{D1}
+        \printitem{D2}
+        \printitem{D3}
+    \end{enumerate}
+\end{enumerate}
+
+\section{Performance Requirements}
+The system must be sized according to the number of users who will use it. Since the system operations are pretty lightfull.
+
+\section{Design Constraints}
+\subsection{Standards Compliance}
+In order to make the software as compatible and secure as possible, the following standards has been chosen: 
+\begin{enumerate}
+    \item Accessibility Standard
+    \item REST Standard
+    \item Security Algorithm 
+    \item OpenAPI (Swagger).
+    \item Privacy
+\end{enumerate}
+
+
+\subsection{Hardware limitations}
+Each user must have an electronic device with an Internet connection that allows him/her to access the S\&C website. No particular hardware characteristics are required, but a stable Internet connection and a screen capable of displaying web pages. The device used by the user will allow him/her to view, access and modify the various sections of the platform. It will also be possible to receive notifications directly.
+\section{Software System Attributes}
+\subsection{Reliability}
+The S\&C platform does not manage critical operations. If any operations fail it can be re-executed without any particular consequences. For example, if the submit of an internship request fails, the company can resubmit the request.
+\subsection{Availability}
+The system should always be available. The only downtime allowed is between 1 am and 5 am when students and employee are usually not studying nor working. The platform shall therefore guarantee 99\% (two-nines) of availability.
+\subsection{Security}
+Communication between the user and the S\&C platform is encrypted and data are protected by all possible security means to prevent cyber attacks. Furthermore, students cannot access data to which they are not authorised. For instance, they cannot access other students' data or see the logbooks of other internships. Companies are also not allowed to view the data of other companies or their interns.
+\subsection{Maintainability}
+The system must be divided into modules, which makes it scalable and reusable and therefore easier to maintain and replace in the case of failures. Ordinary maintenance is performed during night hours, when students and workers do not usually access the platform
+\subsection{Portability}
+The S\&C platform does not need any special hardware or software, as it is easily accessible from any operating system with a web browser. A mobile application could also be developed to make access more immediate
