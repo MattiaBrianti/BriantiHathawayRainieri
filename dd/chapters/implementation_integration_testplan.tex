@@ -1,0 +1,196 @@
+% !TeX root = ../dd.tex
+
+The chosen architecture guarantees high decoupling between components, so that most of them
+can be developed and unit tested completely independently, without the need to mock other
+components. Once those are developed, we can integrate them at the end and do additional
+integration testing. We can identify a few different types components:
+
+\begin{description}[leftmargin=0pt]
+    \item[Independent components:] these are back-end components that can be developed fully independently
+          from one another and do not need to directly integrate with any other service
+    \item[External components:] these are the components provided by third-parties, which are supposed
+          to be already reliable, but may need to be stubbed when unit testing our own services
+    \item[Integrating components:] these are the back-end components whose sole role is of allowing
+          communication between other services and therefore need to be directly integrated with those
+    \item[Front-end components:] these are the presentational components that belong to the client layer
+          which rely on the back-end REST API, they can therefore be unit tested by mocking it
+\end{description}
+
+In order to visualize how much each component will need to be tested and plan accordingly, we can use
+the following table, where we associate to each piece of functionality the difficulty of its
+implementation and its importance for the final user experience:
+
+\begin{table}[H]
+    %\caption*{\textbf{Title}}
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Feature}                    & \textbf{Importance} & \textbf{Difficulty} \\\hline
+        Login                               & High                & Medium              \\
+        Tournament and Battle Management    & High                & Low                 \\
+        Tournament and Battle Participation & High                & Medium              \\
+        Automatic evaluation                & High                & High                \\
+        Manual evaluation                   & High                & Low                 \\
+        Tournament rankings                 & Medium              & Low                 \\
+        Battle rankings                     & Medium              & Low                 \\
+        Notifications                       & Medium              & High                \\
+        Badges Management                   & Low                 & Medium              \\
+        Badges Assignment                   & Low                 & High                \\
+        Badges Visualization                & Low                 & High                \\\hline
+    \end{tabular}
+    \caption{Importance and difficulty of features}
+    \label{table:Importance and difficulty of features}
+\end{table}
+
+\section{Development and Test Plan}
+All the components will be developed and tested using a bottom-up approach, in order to reduce as
+much as possible stubs and mocks, which would add additional overhead to the development.
+All the independent microservices can be developed first and in parallel, prioritizing components
+of high importance which need to be tested more thoroughly as outlined by the table above.
+Development can also start on front-end components, which can mock the REST API during testing.
+Lastly, integrating components such as the API Gateway can be developed, after which everything
+can be integration tested. 
+
+After that is completed, system and e2e testing should be done to verify the adherence to the specified requirements.
+This phase also include:
+\begin{itemize}
+    \item Performance testing, to detect bottlenecks and test the scaling strategies. 
+    \item Load testing, to identify memory leaks, overflows and other memory-related problems.
+    \item Stress testing: to make sure that the system recovers gracefully after failures.
+\end{itemize}
+Once a beta version of the software is available, it's possible to perform some acceptance testing which should
+involve different users, including stakeholders, to test if the system responds to actual needs and constraints.
+\pagebreak
+\section{Components integration}
+Here components and subsystems are illustrated via graphs. \\
+Subsystems are a group of components meant to be integration tested together after unit testing.\\
+Integration testing is carried out in a bottom-up approach, so drivers must be implemented to test the different independent subsystems as each subsystem is developed.\\
+The first components that can be tested together are the Notification Service and RabbitMQ.
+That's because the subsystem is implementing medium importance features and thus proper testing with the queue needs to be done carefully.
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Notitification subsystem},
+        label={fig:Notitification subsystem},
+        figure=H}
+    \puml{puml/components-integration/notification}
+\end{adjustbox}
+
+Then the Platform subsystem can be integreted with the Queue of the Notification subsystem.
+Obtaining the Platform and Notification Subsystem.
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Platform and Notification subsystem},
+        label={fig:Platform and Notification subsystem},
+        figure=H}
+    \puml{puml/components-integration/platform-queue}
+\end{adjustbox}
+
+The following four subsystems might be developed in any order, or simultaneously, as they do not depend
+on each other.
+It is recommended to develop first the subsystems that implement High Importance features, such as:\\
+the User subsystem, the Build and Test subsystem, and the Static Analysis subsystem, and then the Badge subsystem that implements Low Importance functionality.
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={User subsystem},
+        label={fig:User subsystem},
+        figure=H}
+    \puml{puml/components-integration/user}
+\end{adjustbox}
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Build and Test subsystem},
+        label={fig:Build and Test subsystem},
+        figure=H}
+    \puml{puml/components-integration/buildtest}
+\end{adjustbox}
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Static Analysis subsystem},
+        label={fig:Static Analysis  subsystem},
+        figure=H}
+    \puml{puml/components-integration/staticanalysis}
+\end{adjustbox}
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Badge subsystem},
+        label={fig:Badge subsystem},
+        figure=H}
+    \puml{puml/components-integration/badge}
+\end{adjustbox}
+
+After that we can also develop the Website CDN.
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={Website CDN subsystem},
+        label={fig:Website CDN subsystem},
+        figure=H}
+    \puml{puml/components-integration/website}
+\end{adjustbox}
+
+At this point all subsystems have been implemented and tested, so the next step is performing integration
+testing between the subsystems and the API Gateway.
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={API Gateway subsystem},
+        label={fig:API Gateway subsystem},
+        figure=H}
+    \puml{puml/components-integration/apigateway}
+\end{adjustbox}
+
+The integration of all the different subsystems with the Gateway API is a critical operation and performing it all at once will likely lead to errors (because of the big-bang like approach).
+To avoid this, the integration can be broken down into smaller integrations by continuing to follow the bottom-up approach.\\
+We can proceed to integrate the API Gateway with the Platform and Notification subsystem.
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={API Gateway subsystem step 1},
+        label={fig:API Gateway subsystem step 1},
+        figure=H}
+    \puml{puml/components-integration/api-integration1}
+\end{adjustbox}
+
+Then, it's possible to integrate the API Gateway with the User and the Badge subsystems.
+
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={API Gateway subsystem step 2},
+        label={fig:API Gateway subsystem step 2},
+        figure=H}
+    \puml{puml/components-integration/api-integration2}
+\end{adjustbox}
+
+After that, integrate the API Gateway with the Static Analysis and Build and Test subsystems.
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={API Gateway subsystem step 3},
+        label={fig:API Gateway subsystem step 3},
+        figure=H}
+    \puml{puml/components-integration/api-integration3}
+\end{adjustbox}
+
+Finally, when all is integrated and tested successfully we can proceed to integrate it with the Website CDN.
+
+\begin{adjustbox}{
+        max size={\textwidth}{\textheightwithcaption{1}},
+        center,
+        caption={API Gateway subsystem step 4},
+        label={fig:API Gateway subsystem step 4},
+        figure=H}
+    \puml{puml/components-integration/api-integration4}
+\end{adjustbox}

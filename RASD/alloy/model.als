@@ -1,201 +1,189 @@
 open util/ordering[DateTime]
 
-sig DateTime {}
+sig DateTime{}
 
 sig Student {
-	cv: lone CV, //Ogni studente può avere un solo CV (oppure non averlo se non compilato)
-	preferences: some FieldOfInterest,
-	currentInternships: lone Internship,
+	initialForm: set InitialForm,
+	cv: set CV,
+	application: set Application,
+	preferences: Preferences,
+	currentInternship: lone Internship,
 	matchedInternships: set Internship,
 	notifications: set Notification,
-	university: University,
-    complaintsDone: set Complaint,
-    complaintsReceived: set Complaint,
-    feedbackDone: set Feedback,
-    feedbackReceived: set Feedback
-}{
+	university: one University,
+	reportAuthor: set Report,
+	questionnaireAuthor: set Questionnaire,
+	messageAuthor: set ChatMessage,
+	messageReceiver: set ChatMessage,
+	logbook: set Logbook
+} {
+	all i: InitialForm | i in initialForm <=> i.author = this
 	all c: CV | c in cv <=> c.owner = this
-	all i: Internship | i in currentInternships <=> i.attendingStudent = this
+	all a: Application | a in application <=> a.student = this
+	all i: Internship | i in currentInternship <=> i.currentStudent = this
 	all i: Internship | i in matchedInternships <=> i.matchedStudents = this
-    
-    //Per ogni studente che sta facendo un'internship implica che abbia il CV
-	all i: Internship | i in currentInternships implies (some cv and cv.owner=this)
-    
-    //Per ogni studente che ha fatto richiesta di un'internship (quindi stato diverso dal Waiting) deve esserci il proprio CV
-    all i: Internship | i in matchedInternships and i.status != Waiting implies (some cv and cv.owner=this)
-    
-    //Quando lo stato di una matchedInternships diventa InProgress
-    //l'Internship viene rimossa da matchedInternships e diventa currentInternships
-    all i: Internship | i in matchedInternships and i.status = InProgress implies (
-        i not in matchedInternships and
-        (no currentInternships => currentInternships = i)
-    )
+	all r: Report | r in reportAuthor <=> r.author = this
+	all q: Questionnaire | q in questionnaireAuthor <=> q.author = this
+	all c: ChatMessage | c in messageAuthor <=> c.author = this
+	all c: ChatMessage | c in messageReceiver <=> c.receiver = this
+	all l: Logbook | l in logbook <=> l.author = this
 
-    //Quando un'Internship passa allo stato terminated viene eliminata dalla currentInternships dello studente
-    all i: Internship | i in currentInternships and i.status = Terminated implies no currentInternships
-    
-	all n: Notification | n in notifications <=> n.receivedBy = this
-    all f: FieldOfInterest | f in preferences <=> f.user = this
-    all c: Complaint | c in complaintsDone <=> c.author = this
-    all c: Complaint | c in complaintsReceived <=> c.receiver = this
-    all f: Feedback | f in feedbackDone <=> f.author = this
-    all f: Feedback | f in feedbackReceived <=> f.receiver = this
-    
-    // Uno studente può inviare feedback solo alla company della sua currentInternships in stato InProgress
-    all f: Feedback | f in feedbackDone implies (
-        f.receiver in Company and
-        f.referredInternship = currentInternships and
-        currentInternships.status = InProgress and
-        currentInternships.company = f.receiver
-    )
- }
+	//For each student doing an internship implies that they have the CV
+	all i: Internship | (i in currentInternship or (i in matchedInternships 
+	and i.state != Waiting)) 
+		implies (some cv and cv.owner = this)
+
+	//When an internship becomes InProgress, it is removed from matchedInternships
+	//and becomes a CurrentInternship
+	all i: Internship | i in matchedInternships and i.state = InProgress implies (
+	i not in matchedInternships and (no currentInternship => currentInternship = i))
+	
+	//When an internship changes to Terminated status,
+	//it is deleted from the student's currentInternship
+	all i: Internship | i in currentInternship and i.state = Terminated 
+		implies no currentInternship
+
+	//For every CV of the student, the student must be linked 
+	//to the corresponding Application
+	all c: CV | c in cv implies one a: Application | a.cv = c and a.student = this
+}
+
+sig Notification {}
+sig Preferences{}
+
+sig InitialForm {
+	author: one Student,
+	cvGenerated: set CV
+} {
+	all s: Student | s in author <=> s.initialForm = this
+	all c: CV | c in cvGenerated <=> c.initialForm = this
+	all c: CV | c in cvGenerated implies c.owner.initialForm = this
+}
 
 sig CV {
-    owner: one Student,
+	owner: one Student,
+	application: one Application,
+	initialForm: one InitialForm
+}{
+	all s: Student | s in owner <=> s.cv = this
+	all a: Application | a in application <=> a.cv = this
+	all i: InitialForm | i in initialForm <=> i.cvGenerated = this
+}
+
+sig Application {
+	student: one Student,
+	cv: one CV,
+	internship: one Internship
+} {
+	all s: Student | s in student <=> s.application = this
+	all c: CV | c in cv <=> c.application = this
+	all i: internship | i in internship <=> i.applications = this
 }
 
 sig Company {
-	internshipOffers: set Internship,
-	notifications: set Notification,
-	complaintsReceived: set Complaint,
-	complaintsDone: set Complaint,
-	feedbackDone: set Feedback,
-    feedbackReceived: set Feedback
+	internshipsCreated: set Internship,
+	messageAuthor: set ChatMessage,
+	messageReceiver: set ChatMessage,
+	questionnaireAnalyzer: set Questionnaire,
+	reportAuthor: set Report,
+	notifications: Notification,
 } {
-    all i: Internship | i in internshipOffers <=> i.company = this
-    all n: Notification | n in notifications <=> n.receivedBy = this
-    all c: Complaint | c in complaintsDone <=> c.author = this
-    all c: Complaint | c in complaintsReceived <=> c.receiver = this
-    all f: Feedback | f in feedbackDone <=> f.author = this
-    all f: Feedback | f in feedbackReceived <=> f.receiver = this
-    
-    // Una company può inviare feedback solo allo studente della sua currentInternships in stato InProgress
-    all f: Feedback | f in feedbackDone implies (
-        f.receiver in Student and
-        f.referredInternship in internshipOffers and
-        f.referredInternship.status = InProgress and
-        f.referredInternship.attendingStudent = f.receiver
-    )
+	all i: Internship | i in internshipsCreated <=> i.company = this
+	all c: ChatMessage | c in messageAuthor <=> c.author = this
+	all c: ChatMessage | c in messageReceiver <=> c.receiver = this
+	all q: Questionnaire | q in questionnaireAnalyzer <=> q.receiver = this
+	all r: Report | r in reportAuthor <=> r.author = this
 }
 
 sig Internship {
-	company: Company,
-	attendingStudent: lone Student,
-	status: InternshipState,
+	applications: set Application,
+	state: InternshipState,
+	currentStudent: lone Student,
 	matchedStudents: set Student,
-    monitor: lone University
+	company: Company,
+	description: String,
+	monitor: lone University 
 } {
-  all s: Student | s in matchedStudents <=> s.matchedInternships = this
-  // Lo stato di un'internship è InProgress solo se è una currentInternship di uno studente
-  status = InProgress implies some s: Student | this = s.currentInternships
-  // Lo stato di un'internship non può essere Reviewing o Selection se non ci sono studenti che l'hanno in matchedInternships
-  (status = Reviewing or status = Selection) implies some s: Student | this in s.matchedInternships
-  // L'University deve essere presente solo se lo stato è InProgress
-  status = InProgress implies some monitor
+	all a: Application | a in applications <=> a.internship = this
+	all s: Student | s in currentStudent <=> s.currentInternship = this
+	all s: Student | s in matchedStudents <=> s.matchedInternships = this
+	all c: Company | c in company <=> c.internshipsCreated = this
+	all u: University | u in monitor <=> u.monitoredInternship = this
+	description = "Description"
+
+	//The status of an internship is InProgress only 
+	//if it is a currentInternship of a student
+	state = InProgress 
+		implies some s: Student | this = s.currentInternship
+	//The status of an internship cannot be Reviewing or Selection
+	//if there are no students who have it in matchedInternships
+	(state = Reviewing or state = Selection) 
+		implies some s: Student | this in s.matchedInternships
+	//The University must only be present if the status is in Progress
+	state = InProgress implies some monitor
 }
 
 sig University {
-	students: set Student,            // Studenti iscritti all'università
-	complaintsReceived: set Complaint, // Reclami ricevuti dall'università
-    complaintsDone: set Complaint, // Reclami inviati dall'università
-	monitoredInternships: set Internship // Tirocini supervisionati
+	students: set Student,
+	reportsReceived: set Report,
+	monitoredInternship: set Internship,
+	messageAuthor: set ChatMessage,
+	messageReceiver: set ChatMessage,
+	logbook: set Logbook
 } {
 	all s: Student | s in students <=> s.university = this
-    all c: Complaint | c in complaintsDone <=> c.author = this
-    all c: Complaint | c in complaintsReceived <=> c.receiver = this
-    all i: Internship | i in monitoredInternships <=> i.monitor = this
+	all r: Report | r in reportsReceived <=> r.receiver = this
+	all i: Internship | i in monitoredInternship <=> i.monitor = this
+	all c: ChatMessage | c in messageAuthor <=> c.author = this
+	all c: ChatMessage | c in messageReceiver <=> c.receiver = this
+	all l: Logbook | l in logbook <=> l.reader = this
 }
 
-sig Feedback {
-	date: DateTime,
+sig Report {
 	author: one (Student + Company),
-	receiver: one (Student + Company),
-	referredInternship: Internship
+	receiver: one University,
 } {
-    // Collegamento del feedback all'autore
-    all s: Student | author = s implies this in s.feedbackDone
-    all c: Company | author = c implies this in c.feedbackDone
-    
-    // Collegamento del feedback al ricevitore
-    all s: Student | receiver = s implies this in s.feedbackReceived
-    all c: Company | receiver = c implies this in c.feedbackReceived
+	all s: Student | s in author <=> s.reportAuthor = this
+	all c: Company | c in author <=> c.reportAuthor = this
+	all u: University | u in receiver <=> u.reportsReceived = this
 }
 
-sig Complaint {
-	referredInternship: Internship,
+sig Questionnaire {
+	author: one Student,
+	receiver: one Company
+} {
+	all s: Student | s in author <=> s.questionnaireAuthor = this
+	all c: Company | c in receiver <=> c.questionnaireAnalyzer = this
+}
+
+sig ChatMessage {
 	author: one (Student + Company + University),
-	subject: one (Student + Company),
-	date: DateTime,
 	receiver: one (Student + Company + University)
 } {
+	all s: Student | s in author <=> s.messageAuthor = this
+	all c: Company | c in author <=> c.messageAuthor = this
+	all u: University | u in author <=> u.messageAuthor = this
+	all s: Student | s in receiver <=> s.messageReceiver = this
+	all c: Company | c in receiver <=> c.messageReceiver = this
+	all u: University | u in receiver <=> u.messageReceiver = this
 
-    // Collegamento del feedback all'autore
-    all s: Student | author = s implies this in s.complaintsDone
-    all c: Company | author = c implies this in c.complaintsDone
-    
-    // Collegamento del feedback al ricevitore
-    all s: Student | receiver = s implies this in s.complaintsReceived
-    all c: Company | receiver = c implies this in c.complaintsReceived
-
-    // Vincolo: Se l'autore è uno studente o una compagnia, il destinatario deve essere un'università
-    (author in Student or author in Company) implies receiver in University
-
-    (author in Student) implies subject in Company
-
-    // Vincolo: Se l'autore è un'università, il destinatario deve essere uno studente o una compagnia
-    author in University implies (receiver in Student or receiver in Company)
-
-    (author in Company) implies subject in Student
+	//A user may not write messages to a user of the same type
+	all s: Student | s in author implies s.messageReceiver in 
+		(Company.messageReceiver + University.messageReceiver)
+	all c: Company | c in author implies c.messageReceiver in
+		(Student.messageReceiver + University.messageReceiver)
+	all u: University | u in author implies u.messageReceiver in
+		(Student.messageReceiver + Company.messageReceiver)
 }
 
-abstract sig Topic {}
-one sig DataAnalysis, MachineLearning, WebDevelopment, CyberSecurity, CloudComputing extends Topic {}
-
-sig FieldOfInterest {
-	topic: one Topic,
-    	user: set Student 
-}
-
-//Non possono esistere 2 field of interest uguali
-fact UniqueTopicsForFieldOfInterest {
-    all disj f1, f2: FieldOfInterest | f1.topic != f2.topic
-}
-
-sig Notification {
-	createdOn: DateTime,
-	receivedBy: one(Student + Company)
+sig Logbook {
+	author: one Student,
+	reader: one University
+} {
+	all s: Student | s in author <=> s.logbook = this
+	all u: University | u in reader <=> u.logbook = this
 }
 
 // States for internship
 enum InternshipState { Waiting, Reviewing, Selection, InProgress, Terminated }
-
-// Per ogni complaint se l'autore è uno studente allora deve essere lo stesso che sta facendo l'internship
-fact StudentComplaintRefersToCurrentInternship {
-    all c: Complaint | c.author in Student implies c.author.currentInternships = c.referredInternship
-}
-
-// Per ogni complaint se l'autore è una Company allora deve essere la stessa company che ha creato l'internship
-fact CompanyComplaintRefersToItsInternship {
-    all c: Complaint | c.author in Company implies c.author = c.referredInternship.company
-}
-
-//Per ogni Complaints se il soggetto è uno studente deve essere lo stesso che sta facendo l'internship
-fact CompanyComplaintRefersToItsInternship {
-    all c: Complaint | c.author in Company implies c.subject = c.referredInternship.attendingStudent
-}
-
-run {
-	#Student = 1
-	#CV = 1
-	#Company = 2
-	#Internship = 2
-		some i: Internship | i.status = InProgress
-	#University = 1
-	#FieldOfInterest = 2
-	#Notification = 3
-	#Feedback = 0
-	#Complaint = 1
-} for 10
-
-
-//Devo aggiungere la condizione che un'internship ha dei FieldOfInterest e devono essere gli stessi dello student per essere matchati e per far arrivare la notifica (?)
+	
