@@ -1,0 +1,6 @@
+@startuml BuildAndTest
+
+[Build and Test Service] as C
+
+
+@enduml
