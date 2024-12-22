@@ -89,7 +89,7 @@
 \usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref} % Adds clickable links at references
 \usepackage{cleveref}
 \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
-\bibliographystyle{abbrvnat} % You may use a different style adapted to your field
+\bibliographystyle{abbrvnat}
 
 % OTHER PACKAGES
 \usepackage{pdfpages} % To include a pdf file
@@ -194,8 +194,8 @@
         \textbf{Deliverable:}   & RASD                                                                                                \\
         \textbf{Title:}         & Requirement Analysis and Specification Document                                                     \\
         \textbf{Authors:}       & Mattia Brianti, Alex Hathaway, Mattia Rainieri                                                \\
-        \textbf{Version:}       & 1.2                                                                                                 \\
-        \textbf{Date:}          & 21{-}11{-}2024                                                                                      \\
+        \textbf{Version:}       & 1.0                                                                                                 \\
+        \textbf{Date:}          & 21{-}12{-}2024                                                                                      \\
         \textbf{Download page:} & https://github.com/MattiaBrianti/BriantiHathawayRainieri                                                   \\
         \textbf{Copyright:}     & Copyright © 2024-2025, Mattia Brianti, Alex Hathaway, Mattia Rainieri {-} All rights reserved \\
         \hline
@@ -261,7 +261,8 @@
 %-------------------------------------------------------------------------
 
 \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
-\bibliography{bibliography} % The references information are stored in the file named "Thesis_bibliography.bib"
+\nocite{*}
+\bibliography{bibliography}
 
 
 % LIST OF FIGURES

@@ -28,18 +28,18 @@
 
 
 \subsection{Hardware Interfaces}
-The system does not need any specific hardware, each user will need a browser with an Internet connection in order to communicate with the servers of the platform.
+The system does not need any specific hardware, each user will need a browser with an Internet connection in order to communicate with the platform's servers.
 
 \subsection{Software Interfaces}
 \begin{enumerate}
     \item \textbf{Videocall meeting}
-    \item \textbf{AI tool for match making}
+    \item \textbf{AI tool for matchmaking}
     \item \textbf{Databases Interface}
 \end{enumerate}
 
 \subsection{Comunication Interfaces}
 \begin{enumerate}
-    \item \textbf{eduGAIN Radius} - in order to allow a native single sign-on for all European universities.
+    \item \textbf{eduGAIN Radius} - in order to allow a native single sign-on for all European universities. \cite{eduGAIN}
     \item \textbf{OAuth2} - is a very commonly used standard in the enterprise environment, to consent the adoption of Single Sign On (SSO) with external platform.
     \item \textbf{HyperText Transfer Protocol over Secure Socket Layer (HTTPS)} - used for all communications between client  and server.
     \item \textbf{Simple Mail Transfer Protocol (SMTP)} - , a standard protocol for email transmission, which is used by this platform to send notifications through email.
@@ -51,20 +51,20 @@ The system does not need any specific hardware, each user will need a browser wi
     \labelleditem{The system shall allow the student to provide information for their CVs.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
             \labelledsubitem{The system shall allow the students to specify their personal information, like name, contact and personal ambition.}
-            \labelledsubitem{The system shall allow the students to specify their education experience, like the academic background.}
-            \labelledsubitem{The system shall allow the students to specify their passed work experience, specifying job title, company name, duration and technologies used.}
-            \labelledsubitem{The system shall allow the students to specify their technical and soft skills.}
+            \labelledsubitem{The system shall allow the students to specify their education experience, including their academic background.}
+            \labelledsubitem{The system shall allow the students to specify their past work experience, specifying job title, company name, duration and technologies used.}
+            \labelledsubitem{The system will allow students to specify their technical and soft skills.}
             \labelledsubitem{The system shall allow the students to specify their project and research, including the title, duration and description}
             \labelledsubitem{The system shall allow the students to specify their extracurricular activities, including the name, organization and achievements.}
-            \labelledsubitem{The system shall allow the students to specify their knowledge of languages, including the level and eventual certifications.}
-            \labelledsubitem{The system shall allow the students to specify their availability.}
-            \labelledsubitem{The system shall allow the students to specify their additional information.}
+            \labelledsubitem{The system will allow students to specify their knowledge of languages, including the level and any certifications.}
+            \labelledsubitem{The system shall allow students to specify their availability.}
+            \labelledsubitem{The system will allow the students to add additional information.}
         \end{enumerate}
     \labelleditem{The system shall allow the students to join an internship.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
             \labelledsubitem{The system shall help the students to create a customized CV for each company.}
         \end{enumerate}
-   \labelleditem{The system shall allow the students to be notified when a new interesting internship becomes available.}
+   \labelleditem{The system shall allow the students to be notified when a new applicable internship becomes available.}
     \labelleditem{The system shall allow the company employee to create an internship.}
         \begin{enumerate}[label=\textbf{R\arabic{enumi}.\arabic*}:,ref=R\arabic{enumi}.\arabic*, leftmargin=*]
             \labelledsubitem{The system shall allow the company employee to specify the title of the internship.}
@@ -74,7 +74,7 @@ The system does not need any specific hardware, each user will need a browser wi
             \labelledsubitem{The system shall allow the company employee to specify the availability of the internship.}
             \labelledsubitem{The system shall allow the company employee to specify other information about the internship.}
         \end{enumerate}
-    \labelleditem{The system shall allow the company employee to be notified when a new probably interesting student becomes available.}
+    \labelleditem{The system shall allow the company employee to be notified when a new potentially interesting student becomes available.}
     \labelleditem{The system shall allow the student to view a personalized homepage after inserting his CV's information.}
     \labelleditem{The system shall allow the company employee to view a personalized homepage after publishing an internship.}
     \labelleditem{The system shall allow the company to write a complaint to the university.}
@@ -133,13 +133,13 @@ The system does not need any specific hardware, each user will need a browser wi
         \end{itemize}                                        \\\hline
         \textbf{Event flow}      &
         \begin{enumerate}[label=\arabic*.]
-              \item The student, who has got an internet connection, insert the URL in the browser.
+              \item The student, who has an internet connection, inserts the URL in the browser.
               \item The student clicks on the login button.
               \item The student inserts his email and will be redirected to the university SSO.
-              \item The students selects his favorite academic interests.
+              \item The students selects his academic interests.
         \end{enumerate}            \\\hline
-        \textbf{Exit condition}  & The students is redirected to the homepage\\\hline
-        \textbf{Exception}       &  Student's credentials are not valid. In this case a pop up will be shown.   \\\hline
+        \textbf{Exit condition}  & The student is redirected to the homepage\\\hline
+        \textbf{Exception}       &  Student's credentials are not valid. In this case a pop up will be shown with a message to that effect.   \\\hline
     \end{tabular}
     \caption{Student's first platform access}
     \label{table:Student's first platform access}
@@ -185,7 +185,7 @@ The system does not need any specific hardware, each user will need a browser wi
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/2-student-provide-his-cv.png}
-        \caption{Student provides his CV’s information to the platform.}
+        \caption{Student inserts information from their CV in the platform.}
         \label{fig:Student provides his CV’s information to the platform}
     \end{figure}
 
@@ -206,27 +206,27 @@ The system does not need any specific hardware, each user will need a browser wi
         \textbf{Event flow}      &
         \begin{enumerate}[label=\arabic*.]
               \item The student opens the homepage.
-              \item The student click on contact button next to the interested company.
-              \item The platform generate a customized CV.
+              \item The student clicks on contact button next to the interested company.
+              \item The platform generates a customized CV.
               \item The student reads the proposal customized and send it.
-              \item The company receive the customized CV.
+              \item The company receives the customized CV.
         \end{enumerate}            \\\hline
-        \textbf{Exit condition}  & The company employee approve student's CV.\\\hline
+        \textbf{Exit condition}  & The company employee approves the student's CV.\\\hline
         \textbf{Exception}       &  
         \begin{itemize}
-              \item The student does not appreciate the customized CV proposed by the platform. In this case, the student manually modify it.
+              \item The student does not approve the customized CV proposed by the platform. In this case, the student manually modifies it.
               \item The company employee does not approve the student's CV. In this case, the employee can reject the proposal.  
         \end{itemize} 
         \\\hline
     \end{tabular}
-    \caption{Student search and contact the company}
+    \caption{Student finds the company and contacts it via the platform}
     \label{table:Student search and contact the company}
     \end{table}
 
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/3-student-contact-company.png}
-        \caption{Student search and contact the company.}
+        \caption{Student finds the company and contacts it via the platform.}
         \label{fig:Student search and contact the company}
     \end{figure}
     
@@ -248,11 +248,11 @@ offering \\\hline
         \begin{enumerate}[label=\arabic*.]
               \item The company employee logs in using his company's credentials.
               \item The company employee opens the "Create Job Opportunity" page.
-              \item The company employee insert into the platform all the information requested.
-              \item A successful message is show, and, after a couple of second, the company employee is redirected to the hompage.
+              \item The company employee inserts all the information requested into the platform.
+              \item A successful message is shown, and, after a couple of seconds, the company employee is redirected to the homepage.
         \end{enumerate}            \\\hline
         \textbf{Exit condition}  & Interested students receive a notification \\\hline
-        \textbf{Exception}       &  Company employee has not full field the form. In this case, an alert message is shown.   \\\hline
+        \textbf{Exception}       &  Company employee has not completed all fields in the form. In this case, an alert message is shown.   \\\hline
     \end{tabular}
     \caption{Student search and contact the company}
     \label{table:Student search and contact the company}
@@ -261,7 +261,7 @@ offering \\\hline
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/4-company-publish-and-adv.png}
-        \caption{Student search and contact the company.}
+        \caption{Student finds the company and contacts it via the platform.}
         \label{fig:Student search and contact the company}
     \end{figure}
 
@@ -284,25 +284,25 @@ offering \\\hline
         \begin{enumerate}[label=\arabic*.]
               \item The student receive an email.
               \item The student click on the link contained in the email.
-              \item The student is interested on that specific internship, so he press on "Contact" button.
-              \item The student appreciates the custom generated CV.
+              \item The student is interested on that specific internship, so he presses the "Contact" button.
+              \item The student approves the custom generated CV.
         \end{enumerate}            \\\hline
         \textbf{Exit condition}  & Student clicks the "Send" button.\\\hline
         \textbf{Exception}       &  
         \begin{itemize}
-            \item The student is not interested on the proposed internship. In this case, the student just ignore the notification.
-            \item The student does not appreciate the customized CV proposed by the platform. In this case, the student manually modify it.
+            \item The student is not interested in the proposed internship. In this case, the student simply ignores the notification.
+            \item The student does not approve the customized CV proposed by the platform. In this case, the student must manually modify it.
         \end{itemize} 
         \\\hline
     \end{tabular}
-    \caption{Student search through the internships and contact the company}
+    \caption{Student searches through available internships and contacts the company}
     \label{table:Student search through the internhisps and contact the company}
     \end{table}
 oi
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/5-student-receives-a-notification.png}
-        \caption{Student receive a notification about the availability of an internship that might interest him.}
+        \caption{Student receives a notification about the availability of an internship that might interest him.}
         \label{fig:Student receive a notification about the availability of an internship that might interest him}
     \end{figure}
 
@@ -312,7 +312,7 @@ oi
         \centering
         \begin{tabular}{|l|p{11.9cm}|}
         \hline
-        \textbf{Name}            & A company receive a notification about the availability of a student CV corresponding to their needs \\\hline
+        \textbf{Name}            & A company receives a notification about the availability of a student CV corresponding to their needs \\\hline
         \textbf{Actor}           & Student, Company Employee       \\\hline
         \textbf{Entry condition} &
         \begin{itemize}
@@ -322,12 +322,12 @@ oi
         \begin{enumerate}[label=\arabic*.]
               \item The system will start a matchmaking process between the student and opened internship positions.
               \item The system sends a notification to all of the company employees who may be interested in the new student.
-              \item The company employee, who receive the notification, click on the "View Profile" button to obtain more detailed information about his CV.
-              \item The company employee click on sends message, near the student name, to contact him.
+              \item The company employee, who receives the notification, clicks on the "View Profile" button to obtain more detailed information about his CV.
+              \item The company employee clicks on send message, near the student name, to contact him.
               
         \end{enumerate}            \\\hline
-        \textbf{Exit condition}  & The company employee send a message to the student  \\\hline
-        \textbf{Exception}       &  The company employee does not really feel interested in the student's proposal. In this case, he just ignored the mail.   \\\hline
+        \textbf{Exit condition}  & The company employee sends a message to the student  \\\hline
+        \textbf{Exception}       &  The company employee does not really feel interested in the student's proposal. In this case, he just ignores the mail.   \\\hline
         \end{tabular}
         \caption{A company receive a notification about the availability of a student CV corresponding to their needs.}
         \label{table:A company receive a notification about the availability of a student CV corresponding to their needs}
@@ -336,7 +336,7 @@ oi
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/6-matchmaking-new-student.png}
-        \caption{A company receive a notification about the availability of a student CV corresponding to their needs.}
+        \caption{A company receives a notification about the availability of a student CV corresponding to their needs.}
         \label{fig:A company receive a notification about the availability of a student CV corresponding to their needs}
     \end{figure}
 
@@ -361,7 +361,7 @@ oi
               
         \end{enumerate}            \\\hline
         \textbf{Exit condition}  & Click on "Submit" button  \\\hline
-        \textbf{Exception}       &  The student do not want to provide his feedback. In this case, no action are required.   \\\hline
+        \textbf{Exception}       &  The student does not want to provide his feedback. In this case, no actions are required.   \\\hline
         \end{tabular}
         \caption{Student gives final feedback about the internship.}
         \label{table:Student gives final feedback about the internship}
@@ -381,7 +381,7 @@ oi
         \centering
         \begin{tabular}{|l|p{11.9cm}|}
         \hline
-        \textbf{Name}            & University receive the request of ending an internship from a student and contact the company to end it \\\hline
+        \textbf{Name}            & The University receive the request to end an internship from a student and contacts the company to end it \\\hline
         \textbf{Actor}           & University employee     \\\hline
         \textbf{Entry condition} &
         \begin{itemize}
@@ -389,7 +389,7 @@ oi
         \end{itemize}                                        \\\hline
         \textbf{Event flow}      &
         \begin{enumerate}[label=\arabic*.]
-              \item The university employee clicks on the "See complain" button in the email, so a new page is opened.
+              \item The university employee clicks on the "See complaint" button in the email, so a new page is opened.
               \item The university employee opens the student's profile by clicking on his name.
               \item The university employee clicks on "Terminate Internship" button.
               
@@ -397,14 +397,14 @@ oi
         \textbf{Exit condition}  & The university employee confirms the pop-up.  \\\hline
         \textbf{Exception}       &    \\\hline
         \end{tabular}
-        \caption{University receive the request of ending an internship from a student and contact the company to end it .}
+        \caption{University receive the request of ending an internship from a student and contacts the company to end it .}
         \label{table:University receive the request of ending an internship from a student and contact the company to end it }
     \end{table}
 
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{RASD/Assets/SequenceDiagrams/8-student-end-internship.png}
-        \caption{University receive the request of ending an internship from a student and contact the company to end it .}
+        \caption{University receive the request of ending an internship from a student and contacts the company to end it .}
         \label{fig:University receive the request of ending an internship from a student and contact the company to end it }
     \end{figure}
 
@@ -446,7 +446,7 @@ oi
         \centering
         \begin{tabular}{|l|p{11.9cm}|}
         \hline
-        \textbf{Name}            & The company complains about the student taking the internship \\\hline
+        \textbf{Name}            & The company complains about the student in the internship \\\hline
         \textbf{Actor}           & Company employee, university employee    \\\hline
         \textbf{Entry condition} &
         \begin{itemize}
@@ -457,7 +457,7 @@ oi
               \item The company employee open the S\&C portal and opens the "Report Area" page.
               \item The company employee selects the involved student's name.
               \item The company employee clicks on "Report" button in student's page.
-              \item The company employee now can fill out the form, describing the problem's detail.
+              \item The company employee now can fill out the form, describing the problem details.
               \item The company employee clicks on "Submit" button
         \end{enumerate}            \\\hline
         \textbf{Exit condition}  & The University receives a notification about the report.\\\hline
@@ -475,7 +475,7 @@ oi
     \end{figure}
 
 \subsection{Requirements mapping}
-In this section it is shown how the $R\land D \models G$ holds.
+This section shows how the $R\land D \models G$ holds.
 In particular, the following traceability matrix associates domain assumptions and requirements to goals.
 After that, to facilitate reading, the text of all the assumptions and all the requirements related to each goal is reported.
 \begin{table}[H]
@@ -838,17 +838,17 @@ After that, to facilitate reading, the text of all the assumptions and all the r
 \end{enumerate}
 
 \section{Performance Requirements}
-The system must be sized according to the number of users who will use it. Since the system operations are pretty lightfull.
+The system must be sized according to the number of users who will use it. Since the system operations are pretty lightweight, the hardware required should be minimal.
 
 \section{Design Constraints}
 \subsection{Standards Compliance}
-In order to make the software as compatible and secure as possible, the following standards has been chosen: 
+In order to make the software as compatible and secure as possible, the following standards have been chosen: 
 \begin{enumerate}
     \item Accessibility Standard - The entire system complies with the Web Content Accessibility Guidelines (WCAG) so that the system is compatible with systems with limited hardware and software.
-    \item REST API - API programming interface that follows the design principles of the REST architectural style, which stands for representational state transfer.
+    \item REST API - API programming interface that follows the design principles of the REST architectural style, which stands for REpresentational State Transfer.
     \item Security Algorithm - The system uses the best security standards available today, such as TLS over HTTP (HTTPS) and Secure Shell Protocol (SSH) with exclusive authentication via RSA with a 4096-bit key.
     \item OpenAPI (Swagger) -  The specification creates a RESTful interface for easily developing and consuming an API by effectively mapping all the resources and operations associated with it.
-    \item Privacy - The platform is fully GDPR compliant, showing what cookie the system should save.
+    \item Privacy - The platform is fully GDPR compliant, showing what cookies the system will save.
 \end{enumerate}
 
 
@@ -856,7 +856,7 @@ In order to make the software as compatible and secure as possible, the followin
 Each user must have an electronic device with an Internet connection that allows him/her to access the S\&C website. No particular hardware characteristics are required, but a stable Internet connection and a screen capable of displaying web pages. The device used by the user will allow him/her to view, access and modify the various sections of the platform. It will also be possible to receive notifications directly.
 \section{Software System Attributes}
 \subsection{Reliability}
-The S\&C platform does not manage critical operations. If any operations fail it can be re-executed without any particular consequences. For example, if the submit of an internship request fails, the company can resubmit the request.
+The S\&C platform does not manage critical operations. If any operations fail they can be re-executed without any particular consequences. For example, if the submit of an internship request fails, the company can resubmit the request.
 \subsection{Availability}
 The system should always be available. The only downtime allowed is between 1 am and 5 am when students and employee are usually not studying nor working. The platform shall therefore guarantee 99\% (two-nines) of availability.
 \subsection{Security}
@@ -864,4 +864,4 @@ Communication between the user and the S\&C platform is encrypted and data are p
 \subsection{Maintainability}
 The system must be divided into modules, which makes it scalable and reusable and therefore easier to maintain and replace in the case of failures. Ordinary maintenance is performed during night hours, when students and workers do not usually access the platform
 \subsection{Portability}
-The S\&C platform does not need any special hardware or software, as it is easily accessible from any operating system with a web browser. A mobile application could also be developed to make access more immediate
+The S\&C platform does not need any special hardware or software, as it is easily accessible from any operating system with a web browser. A mobile application could also be developed to make access easier for users in a variety of conditions and locations.
