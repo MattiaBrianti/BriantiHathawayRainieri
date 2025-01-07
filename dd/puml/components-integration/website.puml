@@ -1,5 +1,0 @@
-@startuml website
-
-[Website CDN] as C
-
-@enduml
