@@ -1,52 +1,47 @@
 % !TeX root = ../dd.tex
+\section{Purpose}
+The purpose of this document is to present a technical description of the S\&C platform. It is intended for developers that have to implement requirements and can serve as a contractual agreement between the customer and the contractors. Additionally, this document aims to provide the customer with a clear and precise explanation of the system's functionalities and constraints.
 \section{Scope}
-The Students\&Companies platform is a platform that allows students and companies to facilitate their research for internships and interns. It offers students the possibility to join an internship project and companies to share the projects they are offering. 
-For this software system a 3-tier architecture is the best choice.  
+The Students\&Companies platform is a tool that allows students and companies to facilitate their research for internships and interns. It offers students the possibility to join an internship project and companies to share the projects they are offering. 
+For this software system a 3-tier architecture is the best choice, since there are three main levels such as a presentation level for users, an application tier to manage the logic of the internships, the request and communication and a data layer that copes with databases.
 
 \section{Definitions, Acronyms, Abbreviations}
 
 \subsection{Definitions}
-\begin{description}[leftmargin=0pt]
-    \item[Slug:] a human-readable and URL-friendly (as in, limited to lowercase ASCII characters) string which
-          identifies a particular resource. It is typically used to identify resources in URLs, but can also be used
-          as IDs instead of a more traditional way such as integers
-    \item[GitHub Repository Slug:] a slug with the structure `<repository owner>/<repository name>' which uniquely
-          identifies a repository across all of the ones hosted on GitHub. Can typically be seen in a repository URL
-\end{description}
+\begin{itemize}
+    \item \textbf{OAuth Access Token}: is a temporary credential that allows a client to access protected resources on behalf of a user or an app.
+    \item \textbf{OAuth Refresh Token}: is a credential used to obtain a new access token without re-authenticating.
+\end{itemize}
+
 
 \subsection{Acronyms}
-\begin{description}[leftmargin=0pt]
-    \item[CKB:] CodeKataBattle
-    \item[API:] Application Programming Interface
-    \item[SAT:] Static Analysis tools
-    \item[GH:] GitHub
-    \item[SSO:] Single Sign On
-    \item[UUID:] Universal Unique Identifier
-    \item[DB:] DataBase
-    \item[DBMS:] DataBase Management System
-    \item[RPC:] Remote Procedure Call
-    \item[REST:] REpresentational State Transfer
-    \item[SPA:] Single Page App
-    \item[CDN:] Content Delivery Network
+\begin{description}[leftmargin=0pt] 
+    \item [SSO:] Single Sign On
+    \item [API:] Application Programming Interface
+    \item [CV:] Curriculum Vitae
+    \item [S\&C:] Students\&Companies
+    \item [IDE:] Integrated Development Environment
+    \item[RASD:] Requirements Analysis \& Specification Document
 \end{description}
+
 
 \subsection{Abbreviations}
 \begin{description}[leftmargin=0pt]
     \item[e.g.:] For example
-    \item[repo:] Repository
-    \item[ID:] Identifier
+    \item [w.r.t.:] With reference to
+    \item [ID: ] Identifier
 \end{description}
 
 \section{Revision history}
 
 \begin{itemize}
-    \item \textbf{1.0} (7th January 2024) {-} Initial release
+    \item \textbf{1.0} (07th January 2025) - Initial release
 \end{itemize}
 
 \section{Reference Documents}
 
 \begin{description}[leftmargin=0pt]
-    \item[Specification document:] \emph{"Assignment RDD AY 2023-2024"}
+    \item[Specification document:] \emph{"Assignment RDD AY 2024-2025"}
     \item[UML official specification:] \url{https://www.omg.org/spec/UML/}
     \item[Requirements Analysis and Specification Document:] \emph{"RASD"}
 \end{description}
@@ -56,22 +51,14 @@ For this software system a 3-tier architecture is the best choice.
 
 \begin{enumerate}
     \item \textbf{Section 1: Introduction} \\
-    This section gives a brief description of the problem and the scope of the system.
-    It also contains the list of definitions, acronyms and abbreviations that might be encountered
-    while reading the document.
-    Additionally, there's the revision history of the document, which keeps track of the various
-    version, their release date and their changes.
+    This section gives a brief description of the project. It analyzes summarily the goals and the purpose of the platform described in the RASD. It also contains lists of definitions, acronyms and abbreviations used in the document.  
     \item \textbf{Section 2: Architectural Design} \\
-    This section is about the architecture of the system. 
-    It firstly gives a high level overview of the architectural choices.
-    Then it presents in details the components and deployment views, including server, client and data components (DB schemas).
-    Additionally, it contains sequence diagrams that represent the runtime view of the system, as well as the component interfaces.
-    Finally, this section focus on design choices, styles, patterns and paradigms
+    This section firstly contains an high level description of the components and their interactions. It uses diagrams to describe the architecture of the system. Also, at the end of the section, it describes design choices, styles, patterns and paradigms.
     \item \textbf{Section 3: User Interface Design} \\
     This section provides an overview on how the UI of the system will look like.
     \item \textbf{Section 4: Requirements Traceability} \\
     This section maps the requirements that have been defined in the RASD to the design elements defined in this document.
-    \item \textbf{Section 4: Implementation, Integration and Test Plan} \\
-    This section shows the order in which the subcomponents of the system will be implemented as well
-    as the order in which subcomponents will be integrated and how to test the integration.
+    \item \textbf{Section 5: Implementation, Integration and Test Plan} \\
+    This section shows the order in which the subcomponents of the system will be implemented as well as the order in which subcomponents will be integrated and how to test the integration.
+    \item \textbf{Section 6: Effort Spent} In the sixth section are included information about the number of hours each group member has worked for this document.
 \end{enumerate}

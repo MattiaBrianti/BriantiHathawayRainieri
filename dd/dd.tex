@@ -86,7 +86,6 @@
 % PACKAGES FOR REFERENCES & BIBLIOGRAPHY
 \PassOptionsToPackage{hyphens}{url}
 \usepackage[colorlinks=true,linkcolor=black,anchorcolor=black,citecolor=black,filecolor=black,menucolor=black,runcolor=black,urlcolor=black]{hyperref} % Adds clickable links at references
-\usepackage{cleveref}
 \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
 \bibliographystyle{abbrvnat} % You may use a different style adapted to your field
 
@@ -192,11 +191,11 @@
 
         \textbf{Deliverable:}   & DD                                                                                             \\
         \textbf{Title:}         & Design Document                                                                                \\
-        \textbf{Authors:}       & Giacomo Orsenigo, Federico Saccani, Francesco Ferlin                                           \\
+        \textbf{Authors:}       & Mattia Brianti, Alex Hathaway, Mattia Rainieri                                           \\
         \textbf{Version:}       & 1.0                                                                                            \\
-        \textbf{Date:}          & 07{-}01{-}2024                                                                                 \\
-        \textbf{Download page:} & https://github.com/Furrrlo/FerlinOrsenigoSaccani/                                              \\
-        \textbf{Copyright:}     & Copyright © 2024, Giacomo Orsenigo, Federico Saccani, Francesco Ferlin {-} All rights reserved \\
+        \textbf{Date:}          & 07{-}01{-}2025                                                                                 \\
+        \textbf{Download page:} & https://github.com/MattiaBrianti/BriantiHathawayRainieri/                                             \\
+        \textbf{Copyright:}     & Copyright © 2025, Mattia Brianti, Alex Hathaway, Mattia Rainieri {-} All rights reserved \\
         \hline
     \end{tabu}
 \end{table}
@@ -253,7 +252,7 @@
 \chapter{Implementation, Integration and Test Plan}
 \input{chapters/implementation_integration_testplan.tex}
 
-\chapter{Effert Spent}
+\chapter{Effort Spent}
 \input{chapters/effort_spent.tex}
 
 %-------------------------------------------------------------------------
@@ -261,6 +260,7 @@
 %-------------------------------------------------------------------------
 
 \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
+\nocite{*}
 \bibliography{bibliography} % The references information are stored in the file named "Thesis_bibliography.bib"
 
 

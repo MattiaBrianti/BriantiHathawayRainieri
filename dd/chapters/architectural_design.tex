@@ -1,362 +1,189 @@
 % !TeX root = ../dd.tex
 \section{Overview}
-The system is a distributed application which follows the microservices architecture paradigm.\\
-With the term client we are referring to either a Student or an Educator.\\
-Users interact with the system by interfacing with a Single Page App (SPA), served by a Content Delivery Network (CDN).
-The website forwards appropriate requests to an API Gateway.
-The user is completely unaware of the microservices structure used to operate the system.\\
-Each microservice realizes a service useful for the fulfillment of the single functionality that the CKB Platform is to provide.
-All requests go through the API Gateway which realizes complex services by sending requests to the several available microservices.\\
-The CKB platform can be abstracted into 5 main areas:
-\begin{enumerate}
-
-    \item Battles, Tournaments, Teams and Scores
-    \item Notifications
-    \item Badges
-    \item Building and testing
-    \item Analysing
-
-\end{enumerate}
+Here we represent an high level overview of the S\&C architecture: 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{../images/abstract-system-layout.PNG}
-    \caption{Abstract System View}
-    \label{fig:Abstract System View}
+    \includegraphics[width=\textwidth]{../images/Overview.PNG}
+    \caption{S\&C overview}
+    \label{fig:S\&C overview}
 \end{figure}
 
-These sections contain modules with functionality related to the same domain and independent of each other.
-Consequently, the areas will be implemented by different microservices ensuring low coupling and high cohesion.\\
-The choice to use microservice architecture allows flexibility and scalability.
-All services can indeed be duplicated, since they don't have to interact with databases shared among microservices that could become bottlenecks of the system.\\
-In addition, the components involved in sending notifications, compiling sources, running tests, and analyzing them perform more or less complex operations that may take a few moments of execution time.
-Consequently, they will be implemented in such a way as to be asynchronous, using of message queues to avoid making users wait for a long time (more details in later sections).
-
+Client side:
+\begin{itemize}
+\item \textbf{WebApp:} allows all users to access the S\&C platform. It enables user to perform various operations such as registration, login in, creating an internship or a CV etc.
+\end{itemize}
+Server side: 
+\begin{itemize}
+\item \textbf{Web Server:} handles the communication with users by receiving and processing their commands, which are then directed to the S\&C server. 
+\item \textbf{S\&C server:} manages most of the platform functionalities by using different components which are created to do a specific job. It facilitates the communication between the Web Server and Databases/APIs. It is also replicated across multiple machines to handle a high volume of requests.
+\item \textbf{DBMS Server:} contains data of students, universities, companies, CVs and various information obtained through questionnaires compiled by students. 
+\item \textbf{Mail Server:} is responsible for sending confirmation eMails and all the notification regarding the reccomendation process.
+\end{itemize}
 
 \section{Component view}
-\begin{adjustbox}{
-        max size={\textwidth}{\textheightwithcaption{1}},
-        center,
-        caption={Component view diagram},
-        label={fig:Component view diagram},
-        figure=H}
-    \puml{puml/component-view}
-\end{adjustbox}
-
-\subsection{Client Components}
-The frontend of the platform is a website that allows users to interact with the system.
-The role of the website is to interface the user with the API Gateway, rendering interfaces and requesting data.
-
-\subsection{Server Components}
-The server components contain the business logic needed to provide the functionalities of the application to the clients,
-by responding to requests made by Client Components as well as perform tasks based on interaction with the external
-platforms used by the clients (such as GitHub). There are 5 main components, which corresponds to the main areas identified
-above, as well as a few additional components:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../images/Component_Diagram2.drawio.png}
+    \caption{Component View Diagram}
+    \label{fig:Component View Diagram}
+\end{figure}
+In the figure above it's shown the component view diagram of the platform, where it is represented how the external components of S\&C communicate with the S\&C server. Looking at the high level part of the diagram the components are:
 \begin{itemize}
-    \item \textbf{User Service} {-} implements the authentication as well as keeps track of both students and educators by making
-          use of 3rd-party authentication services provided by the institutions.
-    \item \textbf{Platform Service} {-} implements all the logic related to creating and managing battles and tournaments, including
-          calculating the score and keeping track of the leaderboards
-    \item \textbf{Badge Service} {-} implements all the logic related to the evaluation and assignment of badges, including the gathering
-          of information needed in order to do that (for example Git or GH metadata such as number of commits by students, etc.)
-          as well as the actual evaluation of JavaScript code which gets used by educators in order to express the logic of
-          specific badges
-    \item \textbf{Build and Test Service} {-} implements the Continuous Integration aspect, by building students projects and
-          running them against tests for each push
-    \item \textbf{Static Analysis Service} {-} abstracts away the interaction with SonarCloud, the 3rd party service which will
-          perform the actual static analysis. While SonarCloud already exposes their own API for interaction, it is cumbersome
-          (as it requires registering a webhook \cite{SonarCloudWh}, importing the project from the GH slug \cite{SonarCloudGh},
-          specifying the required analysis metrics in a quality profile \cite{SonarCloudQp} and waiting for a response on the hook).
-          Therefore, by abstracting it away we can use it much more easily and, additionally, make it much less inconvenient to
-          replace it should the need arise.
-    \item \textbf{Notification Service} {-} responsible for delivering push notifications
-          to client devices using external notification APIs (such as the Web Push API \cite{WebPushApi})
-    \item \textbf{Website CDN} {-} responsible for serving the static files of the SPA to the clients
-    \item \textbf{API Gateway} {-} responsible for connecting together all microservices, it is the component that provides a REST
-          interface externally, which the clients will send requests to, which will be implemented by a series of internal calls
-          using gRPC \cite{gRPC} to all the other microservices in order to make responses. The component does not implement a specific
-          functionality per se, but is in charge of providing an interface to the clients as well as enforcing the correct usage
-          of said interface.
-\end{itemize}
 
-\subsection{Data Components}
-Server Components make use of 4 distinct DBMSes, each with its own schema.
-\begin{itemize}
-    \item \textbf{User DB} {-} saves data related to the users of the platform. Its ER schema is not shown
-          here as it would depend on the 3rd-party service, but it would at least require for each student and
-          educator a unique identifier, as well as human-readable identifier to allow users to look up each other
-          (so name and surname or an email). Educators and Students are saved in different tables.
-          \pagebreak
-    \item \textbf{Platform DB}
-          \begin{adjustbox}{
-                  max size={\textwidth}{\textheightwithcaption{1}},
-                  center,
-                  caption={Platform ER},
-                  label={fig:Platform ER},
-                  figure=H}
-              \puml{puml/platform-db}
-          \end{adjustbox}
-          \pagebreak
-    \item \textbf{Badge DB}
-          \begin{adjustbox}{
-                  max size={\textwidth}{\textheightwithcaption{1}},
-                  center,
-                  caption={Badges ER},
-                  label={fig:Badges ER},
-                  figure=H}
-              \puml{/dd/pulm/components-integration/badge.pulm}
-          \end{adjustbox}
-    \item \textbf{Notification DB}
-          \begin{adjustbox}{
-                  max size={\textwidth}{\textheightwithcaption{1}},
-                  center,
-                  caption={Notification ER},
-                  label={fig:Notification ER},
-                  figure=H}
-              \puml{puml/notification-db}
-          \end{adjustbox}
+    \item{\textbf{WebApp:}} which is an external access point for users, allowing the communication with the S\&C server through an API interface.
+    \item{\textbf{Website CDN:}} which is responsible for improving the distribution of web content to end users.
+    \item{\textbf{API interface:}} which is responsible for connecting the presentation layer (WebApp) with the application layer (S\&C server), which is coordinated by an API Gateway.
+    \item{\textbf{Mail Server:}} is responsible for sending notification to the users such as registration confirmation eMails, new student Cv notification to companies or new internship posted notifications to students.
+    \item{\textbf{DBMS:}} which is the data warehouse of the system containing data from the questionnaires, user's CV, company's data and internship related data.
 \end{itemize}
-\pagebreak
+Looking the diagram at a lower level, it shows all the components inside the server:
+\begin{itemize}
+    \item \textbf{API Gateway:} is a must have component which manages all the communication between the user and the platform. Users interact with S\&C through the API interface, and the API Gateway directs the requests to the appropriate component. 
+    \item \textbf{Notification Manager:} handles all the notifications that are to be sent to users. In particular it sends a message to: companies every time a student who is fit to their needs has registered, to students every time a company posts an interesting internship or to universities every time one of the two parties complains. To know which user to send the message to, the notification manager needs to interact with the DBMS API. 
+    \item\textbf{Platform Manager:} it manages all the aspects related to users necessities. For example, it allows students to provide their own information to create their personalized CV, allows student to join internships or allows all the parties to chat and communicate.
+    \item \textbf{Reccomendations Manager:} is a component that handles the reccomendation process where through the use of statistical analysis and word searching mechanism recommends to student the most fit internships available, or recommends to companies new students that added their CV information.
+    \item\textbf{User Manager:} this component handles the registration and log in of users. Whenever a new user wants to create an account a request is forwarded to this component by the API Gateway. Then the User Manager handles the request by sending through the registration interface and the notification manager a confirmation email. Once the email has been confirmed the component through the model interface adds the new user's information to the DBMS, including his topic preferences. For the login process the API Gateway forwards the request to the User manager, which communicates with the  DBMS to retrieve the user's data.
+    \item \textbf{Relation Manager:} this component manages the interactions between users letting them complain about problems or informing other parties about the current status of the internship.
+\end{itemize}
 
 \section{Deployment view}
-\begin{adjustbox}{
-        max size={\textwidth}{\textheightwithcaption{1}},
-        center,
-        caption={Deployment view diagram},
-        label={fig:Deployment view diagram},
-        figure=H}
-    \includesvg{images/deployment-diagram.svg}
-\end{adjustbox}
-The frontend is a SPA implemented with the React framework.
-The website can be visited from any modern web browser, such as Google Chrome, Mozilla Firefox or Microsoft Edge.
-Clients can be any device that can run the previous browsers, such as computers with Windows, Linux or macOS and smartphones/tablets with Android or IOS.
 
-The website is served by a CDN, such as Cloudflare, Amazon CloudFront or Akamai.
-This allows to always have the maximum efficiency, regardless of the number of users connected at the same time.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../images/Deployment_diagram.png}
+    \caption{Deployment Diagram}
+    \label{fig:Deployment Diagram}
+\end{figure}
 
-All other microservices are protected by a firewall that allows only HTTPS connections to the API Gateway.
-All microservices can be hosted on-premise or in cloud, within a virtual network, such as Amazon VPC \cite{VPC}.
-Since the expected workload will not be constant over time (all students study more or less at the same times),
-an on-premise architecture would be unused most of the time, resulting in a waste of money.
-The best choice is therefore a cloud architecture, such as Amazon EC2 \cite{EC2}, that allows to scale up resources only when really needed.
+\begin{description}[noitemsep,    % Niente spazio aggiuntivo tra le righe
+                    itemsep=1em, % Spaziatura verticale tra un “item” e il successivo
+                    labelsep=0.5em] % Distanza tra il "titolino" e il testo
+                    \item[\textbf{Personal computer:}] Students and companies can access the platform using any browser installed on any computer. Access is also granted via any device that allows access to a web browser, such as a smartphone, tablet or smart TV. The browser will communicate with the Web Server
+  \item[\textbf{Web Server:}] The Web Server serves as the entry point for users accessing the Application Server’s services via a web browser. It does not process business logic itself; rather, it balances incoming requests among various Application Servers to efficiently handle high volumes of user traffic. Additionally, it provides the client’s browser with the necessary HTML, JSON, JavaScript, and CSS files to render the pages.
+  \item[\textbf{Firewall:}] Security system that monitors and filters incoming and outgoing network traffic based on predefined rules. It acts as a barrier between a trusted internal network and untrusted external networks, helping to block malicious traffic and unauthorized access.
+  \item[\textbf{Application Server:}] The Application Server hosts the system’s entire business logic. It communicates with clients over HTTPS, facilitated by the Web Server. The Dashboard Manager directs incoming requests from the Web Server to the appropriate module, and the model gateway manages communication with the Database Server. This server node is replicated to accommodate high user traffic.
+  \item[\textbf{Database Server:}] All data concerning users, companies and universities are stored in the Database Server and managed by MySQL.
+The various Application Servers can retrieve information on this node via the model module and the database driver.
+  \item[\textbf{Email Server:}] The Email Server handles all notifications that are sent by e-mail. When there is a notification, such as that of a compatible internship offer, the Application Server contacts the Email Server through SMTP protol to send the email to the recipient user
+\end{description}
 
-The API Gateway is stateless and can be implemented with the Spring Cloud Gateway \cite{SpringCloudGateway}.
-It is built on top of the Reactor project \cite{Reactor}, which provides a non-blocking API for routing and filtering requests.
-This allows to handle high traffic and scale the API Gateway horizontally when necessary.
-The API Gateway is also responsible for performing load balancing in case other microservices are replicated.
-
-If the API Gateway is replicated, a load balancer, such as the Amazon ELB \cite{ELB}, is necessary to equally distribute requests among the various instances.
-
-The Build and Test Service is based on the Jenkins system \cite{Jenkins}.
-It is the most CPU-intensive service and should adopt a distributed builds architecture \cite{JenkinsScale}.
-One possibility is to have a single Jenkins controller that schedules builds to dedicated build nodes (agents).
-Build agents can be dynamically deployed to a new EC2 instance and removed, based on the current workload.\\
-If the CKB platform will grow up, an architecture with multiple controllers can be adopted.
-For example, the platform can create a Jenkins controller for each tournament.
-
-All other service are implemented as Spring Boot \cite{SpringBoot} applications and they can be deployed to EC2 instances.
-
-The Platform Service, Badge Service, User Service and Notification Service also have their own database.
-They use a managed DB service, such as Amazon RDS, that can automatically manage backups and resource scaling.
-Each database is in a private subnetwork and it can be accessed only by its corresponding service.
-
-The Notification Service uses RabbitMQ \cite{RabbitMQ} to create a queue where the Platform Service can push messages.
-The service will periodically pop messages from the queue with the Spring AMQP project \cite{SpringAMQP} and send them.
 
 \pagebreak
 
 \section{Runtime view}
 The following sequence diagrams represent the dynamics of interaction between components.\\
 Sequence diagrams from \ref{{RW1}} to \ref{{RW9}} are the realizations of the corresponding use cases in the RASD document.\\
-Sequence diagram \ref{{RW0.1}} represents the login process.\\
-Sequence diagrams from \ref{{RW0.2}} to \ref{{RW0.5}} are common part that have been extracted for simplicity and are not shown in other diagrams.\\
-In the first four sequence diagrams, the user could be a student or an educator.
+
 
 \begin{enumerate}[label=\textbf{RW\arabic*}:,ref=RW\arabic*,leftmargin=1.3cm]
-    \item[]
-          \begin{enumerate}[label=\textbf{RW\arabic{enumi}.\arabic*}:,ref=RW\arabic{enumi}.\arabic*,leftmargin=0.5cm]
-              \labelledsubitem{
-                  \textbf{}
-                  \begin{adjustbox}{
-                          max size={\textwidth}{\textheightwithcaption{1}},
-                          center,
-                          caption={Login},
-                          label={fig:Login},
-                          figure=H}
-                      \puml{puml/rw0.1}
-                  \end{adjustbox}
-                  When the User Service receives the login request, it contacts the external SSO service to validate it.
-                  If the credential provided by the user are correct, the User Service returns an authToken, that must be included in all subsequent requests.
-                  \pagebreak
-              }
-              \labelledsubitem{
-                  \textbf{}
-                  \begin{adjustbox}{
-                          max size={\textwidth}{\textheightwithcaption{1}},
-                          center,
-                          caption={User gets list of tournaments},
-                          label={fig:User gets list of tournaments},
-                          figure=H}
-                      \puml{puml/rw0.2}
-                  \end{adjustbox}
-              }
-              \labelledsubitem{
-                  \textbf{}
-                  \begin{adjustbox}{
-                          max size={\textwidth}{\textheightwithcaption{1}},
-                          center,
-                          caption={User gets tournament details},
-                          label={fig:User gets tournament details},
-                          figure=H}
-                      \puml{puml/rw0.3}
-                  \end{adjustbox}
-                  \pagebreak
-              }
-              \labelledsubitem{
-                  \textbf{}
-                  \begin{adjustbox}{
-                          max size={\textwidth}{\textheightwithcaption{1}},
-                          center,
-                          caption={User gets battle details},
-                          label={fig:User gets battle details},
-                          figure=H}
-                      \puml{puml/rw0.4}
-                  \end{adjustbox}
-                  \pagebreak
-              }
-              \labelledsubitem{
-                  \textbf{}
-                  \begin{adjustbox}{
-                          max size={\textwidth}{\textheightwithcaption{1}},
-                          center,
-                          caption={Notification is sent},
-                          label={fig:Notification is sent},
-                          figure=H}
-                      \puml{puml/rw0.5}
-                  \end{adjustbox}
-                  This diagram shows the process of sending a notification.
-                  The Notification Service will periodically pop from the Notification Queue messages that contain an array of IDs of the recipient students.
-                  Then the Notification Service will look for each student's endpoint URL (previously registered by clients using the API Gateway)
-                  and sends the notifications.
-                  \pagebreak
-              }
-          \end{enumerate}
 
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Educator creates a new Tournament},
-                      label={fig:Educator creates a new Tournament},
-                      figure=H}
-                  \puml{puml/rw1}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Educator creates a new badge},
-                      label={fig:Educator creates a new badge},
-                      figure=H}
-                  \puml{puml/rw2}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Educator creates a new Battle for an Existing Tournament},
-                      label={fig:Educator creates a new Battle for an Existing Tournament},
-                      figure=H}
-                  \puml{puml/rw3}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Student joins to an existing Tournament by receiving a notification},
-                      label={fig:Student joins to an existing Tournament by receiving a notification},
-                      figure=H}
-                  \puml{puml/rw4}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      figure=H}
-                  \puml{puml/rw5-part1}
-              \end{adjustbox}
-              \pagebreak
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Students create a team for a tournament battle},
-                      label={fig:Students create a team for a tournament battle},
-                      figure=H}
-                  \puml{puml/rw5-part2}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Student forks the repository},
-                      label={fig:Student forks the repository},
-                      figure=H}
-                  \puml{puml/rw6}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{2}},
-                      center,
-                      caption={Student pushes and triggers automatic evaluation},
-                      label={fig:Student pushes and triggers automatic evaluation},
-                      figure=H}
-                  \puml{puml/rw7}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Educator manually evaluates teams},
-                      label={fig:Educator manually evaluates teams},
-                      figure=H}
-                  \puml{puml/rw8}
-              \end{adjustbox}
-              \pagebreak
-          }
-          \labelleditem{
-              \textbf{}
-              \begin{adjustbox}{
-                      max size={\textwidth}{\textheightwithcaption{1}},
-                      center,
-                      caption={Educator closes a tournament},
-                      label={fig:Educator closes a tournament},
-                      figure=H}
-                  \puml{puml/rw9}
-              \end{adjustbox}
-              \pagebreak
-          }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/1-student-first-login.png}
+        \caption{Student’s first platform access.}
+        \label{fig:Student’s first platform access}
+    \end{figure}
+    \pagebreak
+  }
+  
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/2-student-initial-form.png}
+        \caption{Student inserts his CV information in the InitialForm.}
+        \label{fig:Student inserts his CV information in the InitialForm}
+    \end{figure}
+    \pagebreak
+  }
+
+    \labelleditem{
+        \textbf{}
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/3-students-ask-for-internship.png}
+            \caption{Student search through the internships and contact the company.}
+            \label{fig:Student search through the internships and contact the company}  
+        \end{figure}
+        \pagebreak
+  }
+  
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/4-employee-new-internship.png}
+        \caption{A company publishes an advertisement about the internships they are offering.}
+        \label{fig:A company publishes an advertisement about the internships they are offering}
+    \end{figure}
+    \pagebreak
+  }
+
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/5-student-receive-notification.png}
+        \caption{A student receive a notification about the availability of an internship that might interest her.}
+        \label{fig:A student receive a notification about the availability of an internship that might interest her}
+    \end{figure}
+    \pagebreak
+  }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/6-company-receive-a-notification.png}
+        \caption{A company receives a notification about the availability of a student CV corresponding to their needs.}
+        \label{fig:A company receives a notification about the availability of a student CV corresponding to their needs}
+    \end{figure}
+    \pagebreak
+  }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/7-student-feedback.png}
+        \caption{Student gives final feedback about the internship.}
+        \label{fig:Student gives final feedback about the internship}
+    \end{figure}
+    \pagebreak
+  }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/8-terminate-internship.png}
+        \caption{The University receives the request to end an internship from a student and contacts the company to end it.}
+        \label{fig:The University receives the request to end an internship from a student and contacts the company to end it}
+    \end{figure}
+    \pagebreak
+  }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/9-student-opens-a-complaint.png}
+        \caption{Student complains with the university on the "Report Area" about his ongoing internship.}
+        \label{fig:Student complains with the university on the "Report Area" about his ongoing internship}
+    \end{figure}
+    \pagebreak
+  }
+  \labelleditem{
+      \textbf{}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{dd/assets/runtime-sequence-diagrams/10-company-employee-opens-a-complaint.png}
+        \caption{The company complains about the student taking the internship.}
+        \label{fig:The company complains about the student taking the internship}
+    \end{figure}
+    \pagebreak
+  }
+
+  
 \end{enumerate}
 
 \section{Component interfaces}
@@ -366,274 +193,259 @@ seen in the previous diagrams:
     \item \textbf{API Gateway}
           \begin{itemize}
               \item \textbf{login(username: String, password: String): String?}
-                    logs the user in through the sso service and, if successful, returns the authToken
-              \item \textbf{getListOfTournaments(authToken: String): List<SimpleTournament>}
-                    given a valid educator auth token, returns the list of tournaments which he has created
-                    or he has permissions to add battles to
-              \item \textbf{getTournamentDetails(authToken: String, tournamentId: ID): Tournament}
-                    returns the detailed tournament info for the given id
-              \item \textbf{getBattleDetails(authToken: String, battleId: ID): Battle}
-                    returns the detailed battle info for the given id
-              \item \textbf{searchEducator(authToken: String, name: String?, surname: String?, \ldots): ID?}
-                    search for an educator matching the given name and/or surname
-              \item \textbf{searchStudent(authToken: String, name: String?, surname: String?, \ldots): ID?}
-                    search for a student matching the given name and/or surname
-              \item \textbf{createTournament(authToken: String, tournamentInfo: NewTournament): ID}
-                    create a new tournament with the given info and return its id
-              \item \textbf{createBadge(authToken: String, badgeInfo: NewBadge): ID}
-                    create a new badge with the given info and return its id
-              \item \textbf{createNewBattle(authToken: String, tournementId: ID, battleInfo: Battle): ID}
-                    create a new battle with the given info and return its id
-              \item \textbf{enrollInTournament(authToken: String, tournementId: ID): void}
-                    enroll the student owning the given token in the given tournament
-              \item \textbf{createTeam(authToken: String, battleId: ID): ID}
-                    create a new team to take part in the given battle and assign the student owning the given token
-                    to it, returning the id of the created team
-              \item \textbf{invite(authToken: String, newTeamId: ID, invitedStudentId: ID): void}
-                    send an invitation for the given team to the invitedStudentId, with the student owning the given token
-                    as the invite sender
-              \item \textbf{acceptInvitation(authToken: String, invitation: ID): void}
-                    accept the given invitation
-              \item \textbf{rejectInvitation(authToken: String, invitation: ID): void}
-                    reject the given invitation
-              \item \textbf{enrollInBattle(authToken: String, teamId: ID): void}
-                    enroll the given team in the battle
-              \item \textbf{insertRepoSlug(authToken: String, battleId: ID, repo: Slug): void }
-                    associate the given GH repository to the team of the student owning the given token for the
-                    specified battle
-              \item \textbf{newPush(repo: Slug): void }
-                    triggered by the GHA on a new push to the specified repository
-              \item \textbf{assignGrade(authToken: String, battleId: ID, teamId: ID, grade: Int): void }
-                    assign this gradle to the submission of the specified team in the given battle
-              \item \textbf{closeTournament(authToken: String, tournamentId: ID): void }
-                    close the given tournament
-              \item \textbf{closeBattle(authToken: String, battleId: ID): void }
-                    close the given battle while it's in its consolidation phase
-              \item \textbf{addStudentNotificationEndpoints(authToken: String, endpoint: String): void}
-                    add the URL of the notification endpoints of a student
+              \item \textbf{getTopics(authToken: String): List<Topic>}
+              \item \textbf{putTopics(authToken: String): Void}
+              \item \textbf{raccomandedInternship(authToken: String): List<Internship>}
+              \item \textbf{putUserData(authToken: String, name: String, surname: String, ...): Void}
+              \item \textbf{oauth2Login(accessToken: String, refreshToken: String): Void}
+              \item \textbf{getStudents(authToken: String): List<Student>}
+              \item \textbf{postJobOpportunity(authToken: String, title: String, description: String, ... ): Void}
+              \item \textbf{getCustomizedCV(authToken: String, company: String): CV}
+              \item \textbf{postInterviewRequest (authToken: String, recipient: String, cv: CV): Void}
+              \item \textbf{approveInternship(authToken: String, internshipId: ID): Void}
+              \item \textbf{getCompanyOffer(authToken: String, offerId: ID): Offer?}
+              \item \textbf{getCompany(authToken: String, companyId: ID): Company?}
+              \item 
+              \textbf{getStudent(authToken: String, studentId: String): Student?}
+              \item 
+              \textbf{sendMessage(authToken: String, userId: ID, message: String): Void}
+              \item \textbf{getReportType(authToken: String): ReportType}
+              \item \textbf{postReport(authToken: String, report: Report): Void}
+              \item \textbf{getComplaint(authToken:String, complaintId: ID): Complaint?}
+              \item \textbf{terminateInternship(authToken: String, internshipId: ID): Void}
           \end{itemize}
-    \item \textbf{User Interface}
+             
+    \item \textbf{User Manager Interface}
           \begin{itemize}
               \item \textbf{login(username: String, password: String): String?}
-                    logs the user in through the sso service and, if successful, returns the authToken
-              \item \textbf{validateEducatorToken(authToken: String): ID?}
-                    validate that the given token is a valid educator token and return its educator id
-              \item \textbf{validateStudentToken(authToken: String): ID?}
-                    validate that the given token is a valid student token and return its student id
-              \item \textbf{searchEducator(name: String?, surname: String?, \ldots): ID?}
-                    search for an educator matching the given name and/or surname
-              \item \textbf{searchStudent(name: String?, surname: String?, \ldots): ID?}
-                    search for a student matching the given name and/or surname
-              \item \textbf{checkEducatorIds(educatorsIds: ID[]): Bool}
-                    checks that the given ids are all associated to an existing educator
-              \item \textbf{checkStudentId(studentId: ID): Bool}
-                    checks that the given id is associated to an existing student
+              \item \textbf{oauth2Login(accessToken: String, refreshToken: String)}
+              \item \textbf{putUserData(username: String, name: String, surname: String, ...): Void}
           \end{itemize}
-    \item \textbf{Platform Interface}
-          \begin{itemize}
-              \item \textbf{getListOfTournaments(educatorId: ID): List<SimpleTournament>}
-                    given an educator id, returns the list of tournaments which he has created
-                    or he has permissions to add battles to
-              \item \textbf{getTournamentDetails(tournamentId: ID): Tournament}
-                    returns the detailed tournament info for the given id
-              \item \textbf{getBattleDetails(battleId: ID): Battle}
-                    returns the detailed battle info for the given id
-              \item \textbf{createTournament(creatorId: ID, tournamentInfo: NewTournament): ID}
-                    create a new tournament with the given info and return its id
-              \item \textbf{createNewBattle(tournementId: ID, battleInfo: NewBattle): ID}
-                    create a new battle with the given info and return its id
-              \item \textbf{enrollInTournament(studentId: ID, tournementId: ID): void}
-                    enroll the given student in the given tournament
-              \item \textbf{createTeam(battleId: ID, studentId: ID): ID}
-                    create a new team to take part in the given battle and assign the student owning the given token
-                    to it, returning the id of the created team
-              \item \textbf{invite(newTeamId: ID, invitedStudentId: ID): void}
-                    send an invitation for the given team to the specified student, with the student owning the given token
-                    as the invite sender
-              \item \textbf{acceptInvitation(invitation: ID): void}
-                    accept the given invitation
-              \item \textbf{rejectInvitation(invitation: ID): void}
-                    reject the given invitation
-              \item \textbf{enrollInBattle(teamId: ID): void}
-                    enroll the given team in the battle
-              \item \textbf{insertRepoSlug(studentId: ID, battleId: ID, repo: Slug): void }
-                    associate the given GH repository to the team of the student owning the given token for the
-                    specified battle
-              \item \textbf{findBattleAndTeamFor(repo: Slug): {battleId: ID, teamId: ID}? }
-              \item \textbf{calculateNewScore(battleId: ID, teamId: ID, testsReport: TestReport, stReport: SatReport): void }
-              \item \textbf{assignGrade(battleId: ID, teamId: ID, grade: Int): void }
-                    assign this gradle to the submission of the specified team in the given battle
-              \item \textbf{closeTournament(tournamentId: ID): void }
-                    close the given tournament
-              \item \textbf{closeBattle(battleId: ID): void }
-                    close the given battle while it's in its consolidation phase
-          \end{itemize}
-    \item \textbf{Badge Interface}
-          \begin{itemize}
-              \item \textbf{createBadge(creatorId: ID, badgeInfo: NewBadge): ID}
-                    create a new badge with the given info and return its id
-              \item \textbf{createVariable(name: String, code: String): void}
-                    create a new variable that can be used in badges
-              \item \textbf{assignBadges(tournament: Tournament): void}
-                    evaluate and assign badges to all the students that took part in the given tournament
-          \end{itemize}
-    \item \textbf{Notification Interface}
-          \begin{itemize}
-              \item \textbf{addStudentNotificationEndpoints(studentId: ID, endpoint: String): void}
-                    add the URL of the notification endpoints of a student
-          \end{itemize}
-    \item \textbf{Static Analysis Interface}
-          \begin{itemize}
-              \item \textbf{analyse(repo: Slug): SatReport}
-                    run static analysis on the given repository and produce a report
-          \end{itemize}
-    \item \textbf{Build and Test Interface}
-          \begin{itemize}
-              \item \textbf{buildAndTest(repo: Slug): TestReport}
-                    build the given repository, run its tests and produce a report
-          \end{itemize}
+          
+    \item \textbf{Recommendations Manager Interface}
+        \begin{itemize}
+            \item \textbf{getTopics(username: String): List<Topic>}
+            \item \textbf{putTopics(username: String): Void}
+            \item \textbf{raccomandedInternship(username: String): List<Internship>}
+            \item \textbf{getStudents(username: String): List<Students>}
+            \item \textbf{postJobOpportunity(username: String, title: String, description: String, ... ): Void}
+        \end{itemize}
+
+              
+    \item \textbf{Notifications Manager Interface}
+        \begin{itemize}
+            \item \textbf{sendMessage(userId: ID, message: String): Void}
+            \item \textbf{sendNotification(userId: ID, message: String): Void}
+        \end{itemize}
+          
+    \item \textbf{Platform Manager Interface}
+        \begin{itemize}
+            \item \textbf{getCustomizedCV(username: String, company: String): CV}
+            \item \textbf{postInterviewRequest (username: String, recipient: String, cv: CV): Void}
+             \item \textbf{approveInternship(username: String, internshipId: ID): Void}
+             \item \textbf{getCompanyOffer(username: String, offerId: ID): Offer?}
+             \item \textbf{getCompany(username: String, companyId: ID): Company?}
+             \textbf{getStudent(username: String, studentId: String):   Student?}
+             \item \textbf{terminateInternship(username: String, internshipId: ID): Void}
+        \end{itemize}
+
+    \item \textbf{Relation Manager Interface}
+    \begin{itemize}
+        \item 
+        \textbf{getReportType(username: String): ReportType}
+        \item 
+        \textbf{postReport(username: String, report: Report): Void}
+        \item \textbf{getComplaint(username:String, complaintId: ID): Complaint?}
+        \item \textbf{terminateInternship(username: String, internshipId: ID): Void}
+    \end{itemize}
+    
 \end{itemize}
 
 Types:
 \begin{itemize}
-    \item \textbf{ID} {-} a unique identifier for a given object, could be a self-incrementing integer or a UUID (depends on the chosen DBMS)
-    \item \textbf{Slug} {-} a String identifying a specific GitHub repository, in the format `<username>/<repository>' as can be seen
-          in a GitHub project URL
-    \item \textbf{SimpleTournament}
+    \item \textbf{ID} {-} a unique identifier, auto-incremented by the DBMS
+
+    \item \textbf{Topic}
+    \begin{lstlisting}
+{
+    id: ID,
+    name: String,
+    category: Tech | Extra | Design,
+    type: String
+    priority: Int
+} 
+          \end{lstlisting}
+    \item \textbf{Internship}
+          \begin{lstlisting}
+{
+    companyId: ID,
+    companyName: String,
+    companyLogoUrl: String
+    start: DateTime,
+    end: DateTime,
+    description: String
+} 
+          \end{lstlisting}
+    \item \textbf{Student}
+          \begin{lstlisting}
+{
+    id: ID,
+    name: String, 
+    surname: String,
+    birthday: Date,
+    status: available | busy,
+} 
+          \end{lstlisting}
+    \item \textbf{Company}
           \begin{lstlisting}
 {
     id: ID,
     name: String,
-    status: Subscribing | InProgress | Closed,
-} 
-          \end{lstlisting}
-    \item \textbf{Tournament}
-          \begin{lstlisting}
-{
-    id: ID,
-    name: String,
-    status: Subscribing | InProgress | Closed,
-    subscriptionDeadline: DateTime,
-    enrolledStudents: { id: ID, name: String, score: Int }[],
-    battles: { id: ID }[],
-} 
-          \end{lstlisting}
-    \item \textbf{NewTournament}
-          \begin{lstlisting}
-{
-    name: String,
-    subscriptionDeadline: DateTime,
-    authorizedEducators: { id: ID },
-    badges: { id: ID }[],
-} 
-          \end{lstlisting}
-    \item \textbf{Battle}
-          \begin{lstlisting}
-{
-    name: String,
     description: String,
-    status: Registration | Submission | Consolidation | Done,
-    minStudents: Int,
-    maxStudents: Int,
-    registrationDeadline: DateTime,
-    submissionDeadline: DateTime,
-    requiresManualEvaluation: Bool,
-    repo: Slug?,
-    teams: { id: ID, students: { id: ID }[], score: Int }[],
-} 
-          \end{lstlisting}
-    \item \textbf{NewBattle}
-          \begin{lstlisting}
-{
-    name: String,
-    description: String,
-    minStudents: Int,
-    maxStudents: Int,
-    registrationDeadline: DateTime,
-    submissionDeadline: DateTime,
-    requiresManualEvaluation: Bool,
-    zippedProject: Blob,
-    privateProjectFiles: Path[],
-    sonarRules: {
-        key: String,
-        parameters: {
-            key: String,
-            value: String,
-        }[],
-    }[],
+    logoUrl: String, 
+    category : Tech | Extra | Design 
 }
           \end{lstlisting}
-          The zippedProject field is a binary blob which contains all project files and tests, both public and private.
-          The privateProjectFiles is in charge of defining which files from this zip will be hidden from the students,
-          so that educators can specify private tests. Care must be taken by educators so that the project build script
-          can also work in the absence of those files. The sonarRules field lists all the rules to be applied by
-          SonarCloud when scanning.
-    \item \textbf{NewBadge}
+        
+    \item \textbf{Offer}
           \begin{lstlisting}
 {
     title: String,
     condition: String,
 } 
           \end{lstlisting}
-    \item \textbf{TestReport}
+    \item \textbf{Complaint}
           \begin{lstlisting}
 {
-    passed: Int,
-    failed: Int,
+    id: ID,
+    sender: {
+        userId: Id,
+        name: String,
+        surname: String
+        companyId: ID?
+        isStudent: y | n,
+        }
+    description: String,
+    status: Pending | inProgress | Closed
 } 
           \end{lstlisting}
-    \item \textbf{SatReport}
+
+          
+    \item \textbf{CV}
           \begin{lstlisting}
-Map<{ metricName: String }, { score: Int }> 
+{
+    id: ID,
+    user: {
+        id: ID,
+        name: String, 
+        surname: String,
+        birthday: Date
+    },
+    contact: {
+        phone: String,
+        email: String,
+    },
+    ambitions: String,
+    education: 
+        {
+           organizationName: String
+           start: Date,
+           inProgress: y | n,
+           end: Date?,
+           evaluation: Int?,
+           laudeo: (y | n)?
+        }[],
+    experiences: 
+        {
+            organizationName: String
+            start: Date,
+            inProgress: y | n,
+            end: Date?,
+            type: (project | research)?
+        }
+    skils: 
+    {
+        name: String,
+        description: String,
+        type: Soft | Technical
+    },
+    extracurricularActivities: {
+        name: Steing,
+        organizazionName: String,
+        event: String?,
+        Achievments: String
+    },
+    linguage: {
+        linguage: String,
+        certificate: {
+            name: String,
+            organizationName: String,
+            writeLevel: A1 | A2 | B1 | B2 | C1 | C2,
+            readLevel: A1 | A2 | B1 | B2 | C1 | C2,
+            listenLevel: A1 | A2 | B1 | B2 | C1 | C2,
+            speackLevel: A1 | A2 | B1 | B2 | C1 | C2,
+        }[]
+    }[],
+    availability: {
+        type: paid | free,
+        period: {
+            start: DateTime, 
+            end: DateTime,
+        }[],
+    },
+    additionalInformation: String?
+}
           \end{lstlisting}
+
+          
+    \item \textbf{ReportType}
+        \begin{lstlisting}
+{
+    type: internshipReport | studentReport | finalFeedback
+}
+        \end{lstlisting}
+
+
+    \item \textbf{Report}
+        \begin{lstlisting}
+{
+    id: ID,
+    senderId: ID,
+    name: String,
+    description: String
+    status: Pending | InProgress | Closed,
+    type: Complaint | Evaluation
+} 
+        \end{lstlisting}
 \end{itemize}
 
+
+
 \section{Selected architectural styles and patterns}
-\begin{description}[leftmargin=0pt]
-    \item[Fat client:]
-          fat clients allow offering a wide variety of functionalities independent from the central server, as well as
-          to move part of the business logic off of the server and into the clients.
-          The main advantages it offers are greater decoupling of frontend and backend as well as a better interactive
-          experience, especially in conditions where the client is on an unstable network.
-          Additionally, with the adoption of a single-page applications, there are many cross-platform frameworks
-          which allow to reuse code partially or entirely on multiple platforms.
-          The single-page web application can also be served by a dedicated static webserver, as all its interactivity is
-          implemented client-side, further reducing the burden on the server by delegating its serving to a CDN, which is
-          highly optimized for this specific use case.
-    \item[REST API:] an architectural style defined on top of HTTP centered around the definition of a standardized
-          set of stateless operations. Its main advantages are its simplicity, its use of widely adopted standards which
-          facilitate adoption, and its ease of scalability given by its stateless nature. It allows to have a single API
-          interface against which a heterogeneous set of clients can make requests.
-    \item[Microservices architecture:]
-          an architectural style where a single application is developed as a suite of small services,
-          each running in its own process and each dealing with a single bounded context in the target domain. The use of
-          this architecture allows us a more fine-grained scaling strategy, as we can clearly select in our system CPU-bound
-          services (such as the Build and Test Service) which will need to have many more resources allocated to it compared
-          to the rest of the system.
-    \item[API Gateway:]
-          a mediator which sits between clients and a service being invoked, which allows to implement cross-cutting concerns
-          such as authentication mechanism common for all microservices. It also makes it possible to keep track of and locate references to the different instances of microservices.
-    \item[RPC:] an interaction style where remote calls resembles procedure call in a local setting. In particular, we have
-          chosen to use gRPC and adopt its philosophy, centered around ``coarse-grained message exchange while avoiding the
-          pitfalls of distributed objects and the fallacies of ignoring the network'' \cite{gRPCPrinciples}, therefore
-          avoiding many of the issues normally stemming from RPC/RMI. Additionally, its support out-of-the-box for many
-          languages, load-balancing, blocking \& non-blocking support and HTTP transport make it a perfect fit for use in a
-          microservice architecture.
-    \item[Pub-sub/Message queuing:] a messaging pattern which allows to obtain a high degree of decoupling among components
-          in both space and time: a publisher does not need to know of the existence of a subscriber and can continue to
-          operate independently even if there is none. By doing so, asynchronous communication is implemented.
-    \item[Tiered architecture:] the separation of the architecture in layers, such as presentation, business and data,
-          offers great flexibility, maintainability and scalability. In particular, by separating the business from the data
-          and having communication between components always go through a predefined API, we do not have to worry about
-          each knowing the internal representation of the others.
-    \item[Stateless components:] the use of stateless components, which do not have memory of interactions they have previously
-          received, allows to decouple successive calls to services and facilitates the horizontal scaling of the system.
+
+Students\&Companies will be developed on a \textbf{3-tier architecture}, a software design model that organises the platform into 3 distinct and interconnected layers. This style is widely used, as each tier runs its own infrastructure, ensuring scalability and maintainability.
+The model is organised into the following 3 tiers:
+
+\begin{description}
+    \item[\textbf{Presentation Tier:}]The tier designed for users, responsible for managing the interactions between the application and its users. This tier provides the browser-accessible graphical interface where users can enter data and display results. The objective of this tier is to ensure an intuitive and easy-to-access user experience.
+    \item[\textbf{Application Tier:}] The application tier is the brain of the system. This tier processes user requests coming from the Presentation Tier, executes commands and can communicate with the Data Tier, to save data or complete certain actions requested by users. This tier is also capable of handling multiple requests simultaneously while guaranteeing the security and integrity of the stored data.
+    \item[\textbf{Data Tier:}] The Data Tier is fundamental for data management. It stores and retrieves data securely, ensuring its integrity and availability. This tier includes databases (such as MySQL) and storage systems that interact with the logical tier.
+\end{description}
+
+The system is structured with a \textbf{Client-Server architecture}, in which the Client represents the user interface (Front-End), while the Server represents the backend unit that processes the various requests. Usually, it is always the Client that sends the requests and the Server takes care of handling and answering them. In some cases, however, such as when sending notifications, the Server will perform actions without being invoked.
+
+The implementation of Students\&Companies will follow the \textbf{Model-View-Controller pattern}, which is a software architecture pattern that separates an application into three main components: Model, View, and Controller, making it easier to manage and maintain the codebase.
+\begin{description}
+    \item[\textbf{Model:}] It is responsible for managing the application’s data, processing business rules, and responding to requests for information from other components, such as the View and the Controller.
+    \item[\textbf{View:}] Displays the data from the Model to the user and sends user inputs to the Controller. It is passive and does not directly interact with the Model. Instead, it receives data from the Model and sends user inputs to the Controller for processing.
+    \item[\textbf{Controller:}] Controller acts as an intermediary between the Model and the View. It handles user input and updates the Model accordingly and updates the View to reflect changes in the Model. 
 \end{description}
 
 \section{Other design decisions}
 \begin{description}[leftmargin=0pt]
     \item[Relational DBMS:]
-          a relational database is the traditional choice because of their guarantees given by ACID properties
-          enforcing consistency on the data, as well as their fixed schema with well-defined entities which fits
-          well with the well-defined model we have identified.
+          it's been chosen to use relational database because of their guarantees given by ACID properties enforcing consistency and durability of the data.
+    \item[Load balancing:] to optimize the resource utilization by distributing requests evenly across servers, preventing bottlenecks. 
+    \item[Firewall:] to enhance the protection of the user's data.
+    \item[Notifications:] they are sent via email with attached a link from which the user is able to open the platform. This approach guarantees that users are instantly informed about key events. 
 \end{description}
