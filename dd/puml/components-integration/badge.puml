@@ -1,7 +1,0 @@
-@startuml Badge
-
-[Badge Service] as C
-database BadgeDB as udb
-C .right.> udb : uses
-
-@enduml
